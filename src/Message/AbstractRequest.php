@@ -71,13 +71,17 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
     /**
      * Send a transaction and return the decoded data.
+     * Any movement of funds is normnally done by creating a transaction
+     * to perform the action. Requests that involve profiles, fetching
+     * information, won't involve transactions.
      * TODO: handle unexpected results and HTTP return codes.
      *
+     * @param TransactionRequestInterface $transaction The transaction object
      * @return array The decoded data returned by the gateway.
      */
     public function sendTransaction(TransactionRequestInterface $transaction)
     {
-        // Wrap the transaction into a request.
+        // Wrap the transaction detail into a request.
         $request =  new CreateTransaction($this->getAuth(), $transaction);
 
         // Send the request to the gateway.
