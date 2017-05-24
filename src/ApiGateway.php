@@ -35,6 +35,8 @@ class ApiGateway extends AbstractGateway
             // Either mobileDeviceId or refId can be provided.
             'mobileDeviceId' => '',
             'refId' => '',
+            // True to run against to sandbox.
+            'testMode' => false,
         );
     }
 
