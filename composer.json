@@ -19,12 +19,13 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Academe\\AuthorizeNetApi\\" : "src/" }
+        "psr-4": { "Omnipay\\AuthorizeNetApi\\" : "src/" }
     },
     "require": {
         "php": ">=5.4",
         "omnipay/common": "~3.0-dev",
-        "academe/authorizenet-objects": "dev-master"
+        "academe/authorizenet-objects": "dev-master",
+        "moneyphp/money": "^3.0"
     },
     "require-dev": {
         "omnipay/tests": "~2.0"
