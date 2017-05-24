@@ -19,15 +19,7 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function getData()
     {
-        // TOOD: wrap this bit up as a helper in the abstract class.
-
-        // Omnipay should really be able to provide this object.
-        $money = new Money(
-            $this->getAmountInteger(),
-            new Currency($this->getCurrency())
-        );
-
-        $amount = new MoneyPhp($money);
+        $amount = new MoneyPhp($this->getMoney());
 
         $transaction = new AuthOnly($amount);
 

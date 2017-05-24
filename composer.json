@@ -23,9 +23,8 @@
     },
     "require": {
         "php": ">=5.4",
-        "omnipay/common": "~3.0-dev",
-        "academe/authorizenet-objects": "dev-master",
-        "moneyphp/money": "^3.0"
+        "omnipay/common": "dev-master",
+        "academe/authorizenet-objects": "dev-master"
     },
     "require-dev": {
         "omnipay/tests": "~2.0"
