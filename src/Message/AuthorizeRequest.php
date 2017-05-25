@@ -6,8 +6,8 @@ namespace Omnipay\AuthorizeNetApi\Message;
  *
  */
 
-use Academe\AuthorizeNetObjects\Request\Transaction\AuthOnly;
-use Academe\AuthorizeNetObjects\Amount\MoneyPhp;
+use Academe\AuthorizeNet\Request\Transaction\AuthOnly;
+use Academe\AuthorizeNet\Amount\MoneyPhp;
 use Money\Currency;
 use Money\Money;
 

@@ -7,9 +7,9 @@ namespace Omnipay\AuthorizeNetApi\Message;
  */
 
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
-use Academe\AuthorizeNetObjects\Auth\MerchantAuthentication;
-use Academe\AuthorizeNetObjects\TransactionRequestInterface;
-use Academe\AuthorizeNetObjects\Request\CreateTransaction;
+use Academe\AuthorizeNet\Auth\MerchantAuthentication;
+use Academe\AuthorizeNet\TransactionRequestInterface;
+use Academe\AuthorizeNet\Request\CreateTransaction;
 
 abstract class AbstractRequest extends OmnipayAbstractRequest
 {
@@ -74,6 +74,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      * Any movement of funds is normnally done by creating a transaction
      * to perform the action. Requests that involve profiles, fetching
      * information, won't involve transactions.
+     *
      * TODO: handle unexpected results and HTTP return codes.
      *
      * @param TransactionRequestInterface $transaction The transaction object
@@ -107,7 +108,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function setAuthName($value)
     {
         if (!is_string($value)) {
-            throw new InvalidRequestException('Auth name must be a string.');
+            throw new InvalidRequestException('Auth Name must be a string.');
         }
 
         return $this->setParameter('authName', $value);
