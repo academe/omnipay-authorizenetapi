@@ -41,7 +41,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
     /**
      * Send a HTTP request to the gateway.
-     *
+     * 
+     * @param array|\JsonSerializable $data The body data to send to the gateway
      * @return GuzzleHttp\Psr7\Response
      */
     protected function sendRequest($data, $method = 'POST')
@@ -84,6 +85,9 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         // Wrap the transaction detail into a request.
         $request =  new CreateTransaction($this->getAuth(), $transaction);
+
+        // The merchant site ID.
+        $request = $request->withRefId($this->getTransactionId());
 
         // Send the request to the gateway.
         $response = $this->sendRequest($request);
@@ -134,13 +138,5 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function getTransactionKey()
     {
         return $this->getParameter('transactionKey');
-    }
-
-    /**
-     * The authorization transaction.
-     */
-    public function authorize(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\AuthorizeRequest', $parameters);
     }
 }

@@ -50,4 +50,19 @@ class AuthorizeResponse extends AbstractResponse
     {
         return $this->getValue('messages[0].code');
     }
+
+    /**
+     * Collection of transaction message objects, or null if there are none.
+     * CHECKME: maybe we should always return the collection, whether there are any
+     * transaction messages or not?
+     */
+    public function getTransactionMessages()
+    {
+        return $this->getValue('transactionResponse.transactionMessages');
+    }
+
+    public function getTransactionErrors()
+    {
+        return $this->getValue('transactionResponse.errors');
+    }
 }
