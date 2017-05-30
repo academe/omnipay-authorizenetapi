@@ -24,7 +24,8 @@
     "require": {
         "php": ">=5.4",
         "omnipay/common": "dev-master",
-        "academe/authorizenet": "dev-master"
+        "academe/authorizenet": "dev-master",
+        "symfony/property-access": "^3.2"
     },
     "require-dev": {
         "omnipay/tests": "~2.0"

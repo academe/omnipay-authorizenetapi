@@ -34,11 +34,8 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        $response = $this->sendTransaction($data);
+        $response_data = $this->sendTransaction($data);
 
-        // TODO: here put the result into the appropriate Response class.
-        // It's a Response we need to return, not just data.
-
-        return $response;
+        return new AuthorizeResponse($this, $response_data);
     }
 }
