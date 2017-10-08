@@ -25,7 +25,7 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     protected $parsedData;
 
     /**
-     * 
+     *
      */
     protected $accessor;
 

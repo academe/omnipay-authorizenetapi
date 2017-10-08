@@ -11,6 +11,7 @@ use Academe\AuthorizeNet\Amount\MoneyPhp;
 use Academe\AuthorizeNet\Request\Model\NameAddress;
 use Academe\AuthorizeNet\Payment\CreditCard;
 use Academe\AuthorizeNet\Request\Model\Customer;
+use Academe\AuthorizeNet\Request\Model\Retail;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
 use Money\Currency;
@@ -76,6 +77,8 @@ class AuthorizeRequest extends AbstractRequest
 
             // A credit card has been supplied.
             if ($card->getNumber()) {
+                $card->validate();
+
                 $creditCard = new CreditCard(
                     $card->getNumber(),
                     // Either MMYY or MMYYYY will work.
@@ -87,17 +90,13 @@ class AuthorizeRequest extends AbstractRequest
                 }
 
                 $transaction = $transaction->withPayment($creditCard);
-            }
+            } elseif ($card->getTrack1()) {
+                // A card magnetic track has been suppied (aka card present).
 
-            // A card magnetic track has been suppied.
-
-            elseif ($card->getTrack1()) {
                 $transaction = $transaction->withPayment(
                     new Track1($card->getTrack1())
                 );
-            }
-
-            elseif ($card->getTrack2()) {
+            } elseif ($card->getTrack2()) {
                 $transaction = $transaction->withPayment(
                     new Track2($card->getTrack2())
                 );
@@ -106,6 +105,17 @@ class AuthorizeRequest extends AbstractRequest
 
         if ($this->getClientIp()) {
             $transaction = $transaction->withCustomerIp($this->getClientIp());
+        }
+
+        // The MarketType and DeviceType is mandatory if tracks are supplied.
+        if ($this->getDeviceType() || $this->getMarketType() || (isset($card) && $card->getTracks())) {
+            // TODO: accept optional customerSignature
+            $retail = new Retail(
+                $this->getMarketType() ?: Retail::MARKET_TYPE_RETAIL,
+                $this->getDeviceType() ?: Retail::DEVICE_TYPE_UNKNOWN
+            );
+
+            $transaction = $transaction->withRetail($retail);
         }
 
         $transaction = $transaction->with([
@@ -123,5 +133,41 @@ class AuthorizeRequest extends AbstractRequest
         $response_data = $this->sendTransaction($data);
 
         return new AuthorizeResponse($this, $response_data);
+    }
+
+    /**
+     * TODO: validate values is one of Retail::DEVICE_TYPE_*
+     * @param int $value The retail device type.
+     * @return $this
+     */
+    public function setDeviceType($value)
+    {
+        return $this->setParameter('deviceType', $value);
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeviceType()
+    {
+        return $this->getParameter('deviceType');
+    }
+
+    /**
+     * TODO: validate values is one of Retail::MARKET_TYPE_*
+     * @param int $value The retail market type.
+     * @return $this
+     */
+    public function setMarketType($value)
+    {
+        return $this->setParameter('marketType', $value);
+    }
+
+    /**
+     * @return int
+     */
+    public function getMarketType()
+    {
+        return $this->getParameter('marketType');
     }
 }

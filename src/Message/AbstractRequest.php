@@ -41,7 +41,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
     /**
      * Send a HTTP request to the gateway.
-     * 
+     *
      * @param array|\JsonSerializable $data The body data to send to the gateway
      * @return GuzzleHttp\Psr7\Response
      */
@@ -128,7 +128,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      */
     public function setTransactionKey($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new InvalidRequestException('Transaction Key must be a string.');
         }
 
