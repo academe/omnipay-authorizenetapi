@@ -20,6 +20,12 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 abstract class AbstractResponse extends OmnipayAbstractResponse
 {
     /**
+     * Top-level response result code values.
+     */
+    const RESULT_CODE_OK    = 'Ok';
+    const RESULT_CODE_ERROR = 'Error';
+
+    /**
      * The reponse data parsed into nested value objects.
      */
     protected $parsedData;
@@ -28,6 +34,12 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
      *
      */
     protected $accessor;
+
+    public function __construct(RequestInterface $request, $data)
+    {
+        // Parse the raw data into a response message value object.
+        $this->setParsedData(new Response($data));
+    }
 
     /**
      * Get a value from the persed data, based on a path.
@@ -91,5 +103,63 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     public function getParsedData()
     {
         return $this->parsedData;
+    }
+
+    /**
+     * The merchant supplied ID.
+     * Up to 20 characters.
+     * aka transactionId
+     */
+    public function getRefId()
+    {
+        return $this->getValue('refId');
+    }
+
+    /**
+     * Get the first top-level result code.
+     */
+    public function getResultCode()
+    {
+        return $this->getValue('resultCode');
+
+        // Equivalent to:
+        //return $this->getParsedData()->getResultCode();
+    }
+
+    /**
+     * Get the first top-level message text.
+     */
+    public function getMessage()
+    {
+        return $this->getValue('messages.first.text');
+
+        // Equivalent to this, but with checks at each stage:
+        //return $this->getParsedData()->getMessages()->first()->getText();
+    }
+
+    /**
+     * Get the first top-level message code.
+     */
+    public function getCode()
+    {
+        return $this->getValue('messages.first.code');
+    }
+
+    /**
+     * Get all top-level response messages.
+     */
+    public function getMessages()
+    {
+        return $this->getValue('messages');
+    }
+
+    /**
+     * Tell us whether the response was successful overall.
+     * This is just about the response as a whole; the response may
+     * still represent a failed transaction.
+     */
+    public function responseIsSuccessful()
+    {
+        return $this->getResultCode() === static::RESULT_CODE_OK;
     }
 }

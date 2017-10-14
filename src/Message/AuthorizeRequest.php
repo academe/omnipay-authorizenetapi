@@ -126,7 +126,10 @@ class AuthorizeRequest extends AbstractRequest
     }
 
     /**
-     * Accept a transaction and send it as a request.
+     * Accept a transaction and sends it as a request.
+     *
+     * @param $data TransactionRequestInterface
+     * @returns AuthorizeResponse
      */
     public function sendData($data)
     {
