@@ -173,4 +173,40 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         return $this->getParameter('terminalNumber');
     }
+
+    /**
+     * authenticationIndicator and authenticationValue are used as a pair.
+     * @param string 3D Secure indicator.
+     * @return $this
+     */
+    public function setAuthenticationIndicator($value)
+    {
+        return $this->setParameter('authenticationIndicator', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationIndicator()
+    {
+        return $this->getParameter('authenticationIndicator');
+    }
+
+    /**
+     * authenticationIndicator and authenticationValue are used as a pair.
+     * @param string 3D Secure value.
+     * @return $this
+     */
+    public function setAuthenticationValue($value)
+    {
+        return $this->setParameter('authenticationValue', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationValue()
+    {
+        return $this->getParameter('authenticationValue');
+    }
 }

@@ -130,6 +130,19 @@ class AuthorizeRequest extends AbstractRequest
             $transaction = $transaction->withOrder($order);
         }
 
+        // 3D Secure is handled by a thirds party provider.
+        // These two fields submit the authentication values provided.
+        // It is not really clear if both these fields must be always provided together,
+        // or whether just one is permitted.
+        if ($this->getAuthenticationIndicator() || $this->getAuthenticationValue()) {
+            $cardholderAuthentication = new \Academe\AuthorizeNet\Request\Model\CardholderAuthentication(
+                $this->getAuthenticationIndicator(),
+                $this->getAuthenticationValue()
+            );
+
+            $transaction = $transaction->withCardholderAuthentication($cardholderAuthentication);
+        }
+
         $transaction = $transaction->with([
             'terminalNumber' => $this->getTerminalNumber(),
         ]);
