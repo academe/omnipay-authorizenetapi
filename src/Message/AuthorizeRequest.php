@@ -12,6 +12,7 @@ use Academe\AuthorizeNet\Request\Model\NameAddress;
 use Academe\AuthorizeNet\Payment\CreditCard;
 use Academe\AuthorizeNet\Request\Model\Customer;
 use Academe\AuthorizeNet\Request\Model\Retail;
+use Academe\AuthorizeNet\Request\Model\Order;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
@@ -119,6 +120,16 @@ class AuthorizeRequest extends AbstractRequest
             $transaction = $transaction->withRetail($retail);
         }
 
+        // The description and invoice number go into an Order object.
+        if ($this->getInvoiceNumber() || $this->getDescription()) {
+            $order = new Order(
+                $this->getInvoiceNumber(),
+                $this->getDescription()
+            );
+
+            $transaction = $transaction->withOrder($order);
+        }
+
         $transaction = $transaction->with([
             // ...other data here...
         ]);
@@ -181,5 +192,22 @@ class AuthorizeRequest extends AbstractRequest
     public function getMarketType()
     {
         return $this->getParameter('marketType');
+    }
+
+    /**
+     * @param string Merchant-defined invoice number associated with the order.
+     * @return $this
+     */
+    public function setInvoiceNumber($value)
+    {
+        return $this->setParameter('invoiceNumber', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumber()
+    {
+        return $this->getParameter('invoiceNumber');
     }
 }

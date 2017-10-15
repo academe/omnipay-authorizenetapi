@@ -6,6 +6,7 @@ use Academe\AuthorizeNet\Amount\MoneyPhp;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Request\Transaction\PriorAuthCapture;
 use Academe\AuthorizeNet\Request\Transaction\CaptureOnly;
+use Academe\AuthorizeNet\Request\Model\Order;
 
 class CaptureRequest extends AbstractRequest
 {
@@ -21,9 +22,17 @@ class CaptureRequest extends AbstractRequest
 
         $transaction = $this->createTransaction($amount, $refTransId);
 
-        // TODO:
-        // terminalNumber
-        // order (invoiceNumber, description)
+        // TODO: terminalNumber
+
+        // The description and invoice number go into an Order object.
+        if ($this->getInvoiceNumber() || $this->getDescription()) {
+            $order = new Order(
+                $this->getInvoiceNumber(),
+                $this->getDescription()
+            );
+
+            $transaction = $transaction->withOrder($order);
+        }
 
         return $transaction;
     }
@@ -55,5 +64,22 @@ class CaptureRequest extends AbstractRequest
         $response_data = $this->sendTransaction($data);
 
         return new TransactionResponse($this, $response_data);
+    }
+
+    /**
+     * @param string Merchant-defined invoice number associated with the order.
+     * @return $this
+     */
+    public function setInvoiceNumber($value)
+    {
+        return $this->setParameter('invoiceNumber', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumber()
+    {
+        return $this->getParameter('invoiceNumber');
     }
 }
