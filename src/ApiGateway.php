@@ -89,4 +89,12 @@ class ApiGateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\PurchaseRequest', $parameters);
     }
+
+    /**
+     * The capture transaction.
+     */
+    public function capture(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\CaptureRequest', $parameters);
+    }
 }
