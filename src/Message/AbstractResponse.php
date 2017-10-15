@@ -20,12 +20,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 abstract class AbstractResponse extends OmnipayAbstractResponse
 {
     /**
-     * Top-level response result code values.
-     */
-    const RESULT_CODE_OK    = 'Ok';
-    const RESULT_CODE_ERROR = 'Error';
-
-    /**
      * The reponse data parsed into nested value objects.
      */
     protected $parsedData;
@@ -37,6 +31,9 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
 
     public function __construct(RequestInterface $request, $data)
     {
+        // Omnipay Common has some data to record.
+        parent::__construct($request, $data);
+
         // Parse the raw data into a response message value object.
         $this->setParsedData(new Response($data));
     }
@@ -116,39 +113,42 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     }
 
     /**
+     * The transactionId is returned only if sent in the request.
+     */
+    public function getTransactionId()
+    {
+        return $this->getRefId();
+    }
+
+    /**
      * Get the first top-level result code.
+     * Note this will be unsuitable for most transactions, as the response can
      */
     public function getResultCode()
     {
         return $this->getValue('resultCode');
-
-        // Equivalent to:
-        //return $this->getParsedData()->getResultCode();
     }
 
     /**
      * Get the first top-level message text.
      */
-    public function getMessage()
+    public function getResponseMessage()
     {
         return $this->getValue('messages.first.text');
-
-        // Equivalent to this, but with checks at each stage:
-        //return $this->getParsedData()->getMessages()->first()->getText();
     }
 
     /**
      * Get the first top-level message code.
      */
-    public function getCode()
+    public function getResponseCode()
     {
         return $this->getValue('messages.first.code');
     }
 
     /**
-     * Get all top-level response messages.
+     * Get all top-level response message collection.
      */
-    public function getMessages()
+    public function getResponseMessages()
     {
         return $this->getValue('messages');
     }
@@ -160,6 +160,6 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
      */
     public function responseIsSuccessful()
     {
-        return $this->getResultCode() === static::RESULT_CODE_OK;
+        return $this->getResultCode() === Response::RESULT_CODE_OK;
     }
 }

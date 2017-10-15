@@ -91,7 +91,7 @@ class AuthorizeRequest extends AbstractRequest
 
                 $transaction = $transaction->withPayment($creditCard);
             } elseif ($card->getTrack1()) {
-                // A card magnetic track has been suppied (aka card present).
+                // A card magnetic track has been supplied (aka card present).
 
                 $transaction = $transaction->withPayment(
                     new Track1($card->getTrack1())
