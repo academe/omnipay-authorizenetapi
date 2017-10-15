@@ -10,9 +10,9 @@ use Academe\AuthorizeNet\Response\Collections\TransactionMessages;
 use Academe\AuthorizeNet\Response\Collections\Errors;
 use Omnipay\Common\Message\RequestInterface;
 use Academe\AuthorizeNet\Response\Response;
-use Academe\AuthorizeNet\Response\Model\TransactionResponse;
+use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionResponseModel;
 
-class AuthorizeResponse extends AbstractResponse
+class TransactionResponse extends AbstractResponse
 {
     public function __construct(RequestInterface $request, $data)
     {
@@ -34,7 +34,7 @@ class AuthorizeResponse extends AbstractResponse
         // fast with implicit conversions here.
 
         return $this->responseIsSuccessful()
-            && $this->getResponseCode() == TransactionResponse::RESPONSE_CODE_APPROVED;
+            && $this->getResponseCode() == TransactionResponseModel::RESPONSE_CODE_APPROVED;
     }
 
     /**
@@ -43,12 +43,12 @@ class AuthorizeResponse extends AbstractResponse
     public function isPending()
     {
         return $this->responseIsSuccessful()
-            && $this->getResponseCode() == TransactionResponse::RESPONSE_CODE_PENDING;
+            && $this->getResponseCode() == TransactionResponseModel::RESPONSE_CODE_PENDING;
     }
 
     /**
      * Get the transaction response code.
-     * Expected values are one of TransactionResponse::RESPONSE_CODE_*
+     * Expected values are one of TransactionResponseModel::RESPONSE_CODE_*
      */
     public function getResponseCode()
     {

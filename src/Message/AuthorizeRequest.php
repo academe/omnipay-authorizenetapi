@@ -138,13 +138,13 @@ class AuthorizeRequest extends AbstractRequest
      * Accept a transaction and sends it as a request.
      *
      * @param $data TransactionRequestInterface
-     * @returns AuthorizeResponse
+     * @returns TransactionResponse
      */
     public function sendData($data)
     {
         $response_data = $this->sendTransaction($data);
 
-        return new AuthorizeResponse($this, $response_data);
+        return new TransactionResponse($this, $response_data);
     }
 
     /**
