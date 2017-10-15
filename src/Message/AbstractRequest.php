@@ -139,4 +139,38 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         return $this->getParameter('transactionKey');
     }
+
+    /**
+     * @param string Merchant-defined invoice number associated with the order.
+     * @return $this
+     */
+    public function setInvoiceNumber($value)
+    {
+        return $this->setParameter('invoiceNumber', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumber()
+    {
+        return $this->getParameter('invoiceNumber');
+    }
+
+    /**
+     * @param string Merchant-defined invoice number associated with the order.
+     * @return $this
+     */
+    public function setTerminalNumber($value)
+    {
+        return $this->setParameter('terminalNumber', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTerminalNumber()
+    {
+        return $this->getParameter('terminalNumber');
+    }
 }

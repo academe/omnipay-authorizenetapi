@@ -131,7 +131,7 @@ class AuthorizeRequest extends AbstractRequest
         }
 
         $transaction = $transaction->with([
-            // ...other data here...
+            'terminalNumber' => $this->getTerminalNumber(),
         ]);
 
         return $transaction;
@@ -192,22 +192,5 @@ class AuthorizeRequest extends AbstractRequest
     public function getMarketType()
     {
         return $this->getParameter('marketType');
-    }
-
-    /**
-     * @param string Merchant-defined invoice number associated with the order.
-     * @return $this
-     */
-    public function setInvoiceNumber($value)
-    {
-        return $this->setParameter('invoiceNumber', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getInvoiceNumber()
-    {
-        return $this->getParameter('invoiceNumber');
     }
 }

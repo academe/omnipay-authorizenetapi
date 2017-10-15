@@ -22,8 +22,6 @@ class CaptureRequest extends AbstractRequest
 
         $transaction = $this->createTransaction($amount, $refTransId);
 
-        // TODO: terminalNumber
-
         // The description and invoice number go into an Order object.
         if ($this->getInvoiceNumber() || $this->getDescription()) {
             $order = new Order(
@@ -33,6 +31,10 @@ class CaptureRequest extends AbstractRequest
 
             $transaction = $transaction->withOrder($order);
         }
+
+        $transaction = $transaction->with([
+            'terminalNumber' => $this->getTerminalNumber(),
+        ]);
 
         return $transaction;
     }
@@ -64,22 +66,5 @@ class CaptureRequest extends AbstractRequest
         $response_data = $this->sendTransaction($data);
 
         return new TransactionResponse($this, $response_data);
-    }
-
-    /**
-     * @param string Merchant-defined invoice number associated with the order.
-     * @return $this
-     */
-    public function setInvoiceNumber($value)
-    {
-        return $this->setParameter('invoiceNumber', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getInvoiceNumber()
-    {
-        return $this->getParameter('invoiceNumber');
     }
 }
