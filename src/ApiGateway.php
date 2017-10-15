@@ -35,7 +35,7 @@ class ApiGateway extends AbstractGateway
             // Either mobileDeviceId or refId can be provided.
             'mobileDeviceId' => '',
             'refId' => '',
-            // True to run against to sandbox.
+            // True to run against the sandbox.
             'testMode' => false,
         );
     }
@@ -80,5 +80,13 @@ class ApiGateway extends AbstractGateway
     public function authorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\AuthorizeRequest', $parameters);
+    }
+
+    /**
+     * The purchase transaction.
+     */
+    public function purchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\PurchaseRequest', $parameters);
     }
 }

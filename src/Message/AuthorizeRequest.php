@@ -12,6 +12,7 @@ use Academe\AuthorizeNet\Request\Model\NameAddress;
 use Academe\AuthorizeNet\Payment\CreditCard;
 use Academe\AuthorizeNet\Request\Model\Customer;
 use Academe\AuthorizeNet\Request\Model\Retail;
+use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
 use Money\Currency;
@@ -26,7 +27,7 @@ class AuthorizeRequest extends AbstractRequest
     {
         $amount = new MoneyPhp($this->getMoney());
 
-        $transaction = new AuthOnly($amount);
+        $transaction = $this->createTransaction($amount);
 
         if ($card = $this->getCard()) {
             $billTo = new NameAddress(
@@ -123,6 +124,14 @@ class AuthorizeRequest extends AbstractRequest
         ]);
 
         return $transaction;
+    }
+
+    /**
+     * Create a new instance of the transaction object.
+     */
+     protected function createTransaction(AmountInterface $amount)
+    {
+        return new AuthOnly($amount);
     }
 
     /**
