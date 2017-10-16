@@ -16,6 +16,11 @@ use Academe\AuthorizeNet\Request\Model\Order;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
+use Academe\AuthorizeNet\Collections\LineItems;
+use Academe\AuthorizeNet\Request\Model\LineItem;
+use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
+use Money\Parser\DecimalMoneyParser;
+use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
 
@@ -135,12 +140,45 @@ class AuthorizeRequest extends AbstractRequest
         // It is not really clear if both these fields must be always provided together,
         // or whether just one is permitted.
         if ($this->getAuthenticationIndicator() || $this->getAuthenticationValue()) {
-            $cardholderAuthentication = new \Academe\AuthorizeNet\Request\Model\CardholderAuthentication(
+            $cardholderAuthentication = new CardholderAuthentication(
                 $this->getAuthenticationIndicator(),
                 $this->getAuthenticationValue()
             );
 
             $transaction = $transaction->withCardholderAuthentication($cardholderAuthentication);
+        }
+
+        // Is a basket of items to go into the request?
+        if ($this->getItems()) {
+            $lineItems = new LineItems();
+
+            $currencies = new ISOCurrencies();
+            $moneyParser = new DecimalMoneyParser($currencies);
+
+            foreach($this->getItems() as $itemId => $item) {
+                // FIXME: This is actually the line price, and not the unit price.
+                // We probably need to take the quantity into account to calculate
+                // the unit price.
+
+                $amount = new MoneyPhp(
+                    $moneyParser->parse((string)$item->getPrice(), $this->getCurrency())
+                );
+
+                $lineItem = new LineItem(
+                    $itemId,
+                    $item->getName(),
+                    $item->getDescription(),
+                    $item->getQuantity(),
+                    $amount, //AmountInterface
+                    null //$taxable
+                );
+
+                $lineItems->push($lineItem);
+            }
+
+            if ($lineItems->count()) {
+                $transaction = $transaction->withLineItems($lineItems);
+            }
         }
 
         $transaction = $transaction->with([
