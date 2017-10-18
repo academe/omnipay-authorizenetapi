@@ -106,4 +106,22 @@ class ApiGateway extends AbstractGateway
     {
         return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\CaptureRequest::class, $parameters);
     }
+
+    // Setters for various global settings.
+
+    /**
+     * Used only by the hosted payment page at this time.
+     */
+    public function setCancelUrl($value)
+    {
+        $this->setParameter('cancelUrl', $value);
+    }
+
+    /**
+     * Used only by the hosted payment page at this time.
+     */
+    public function setReturnUrl($value)
+    {
+        $this->setParameter('returnUrl', $value);
+    }
 }

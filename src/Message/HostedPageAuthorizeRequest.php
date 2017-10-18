@@ -25,7 +25,19 @@ class HostedPageAuthorizeRequest extends AuthorizeRequest
     {
         $request = new GetHostedPaymentPage($auth, $transaction);
 
-        // The Hosted Payment Page settings are at the request level.
+        // The Hosted Payment Page settings are at the request level, so 
+        // they cannot be set until we are wrapping the transaction into the request.
+        // Set any individual parameters that map to standard Omnpay parameters first.
+
+        if ($cancelUrl = $this->getCancelUrl()) {
+            $this->setReturnOptionsCancelUrl($cancelUrl);
+        }
+
+        if ($returnUrl = $this->getReturnUrl()) {
+            $this->setReturnOptionsUrl($returnUrl);
+        }
+
+        // Then add the settings to the outer requuest object.
 
         if ($settings = $this->getHostedPaymentSettings()) {
             $request = $request->withHostedPaymentSettings($settings);
@@ -103,12 +115,20 @@ class HostedPageAuthorizeRequest extends AuthorizeRequest
     public function setHostedPaymentSettingParameter($settingName, $parameterName, $parameterValue)
     {
         if ($settings = $this->getHostedPaymentSettings()) {
+            // The settings collection already exists, so add to it.
             $settings->setSettingParameter($settingName, $parameterName, $parameterValue);
         } else {
             // No settings at all so far, so add this one to start.
             $this->setHostedPaymentSetting($settingName, [$parameterName => $parameterValue]);
         }
     }
+
+    // The following parameters follow a consistent pattern that could be implemented
+    // as a magic __call method, but aren't at this time (in case they need to go into
+    // the gateway settings).
+    // They exist to allow these settings to provided as scalar values, even though
+    // they end up quite deep in the request strucure.
+    // There are no equivalent getters for these setters. Do we need getters?
 
     /**
      * @param bool $value
