@@ -65,7 +65,7 @@ class HostedPageAuthorizeRequest extends AuthorizeRequest
 
         $response = new HostedPageResponse($this, $response_data);
 
-        // The response need to know whether we are in test mode or not,
+        // The response needs to know whether we are in test mode or not,
         // so that it chooses the correct hosted page URL to redirect to.
 
         $response->setTestMode($this->getTestMode());

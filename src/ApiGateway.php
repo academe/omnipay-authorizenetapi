@@ -79,7 +79,10 @@ class ApiGateway extends AbstractGateway
      */
     public function authorize(array $parameters = array())
     {
-        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\AuthorizeRequest::class, $parameters);
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\AuthorizeRequest::class,
+            $parameters
+        );
     }
 
     /**
@@ -88,7 +91,10 @@ class ApiGateway extends AbstractGateway
      */
     public function hostedPageAuthorize(array $parameters = array())
     {
-        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\HostedPageAuthorizeRequest::class, $parameters);
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\HostedPageAuthorizeRequest::class,
+            $parameters
+        );
     }
 
     /**
@@ -96,7 +102,22 @@ class ApiGateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\PurchaseRequest::class, $parameters);
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\PurchaseRequest::class,
+            $parameters
+        );
+    }
+
+    /**
+     * The purchase transaction, through a hosted page.
+     * CHECKME: should we move this to a "HostedPage" API type?
+     */
+    public function hostedPagePurchase(array $parameters = array())
+    {
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\HostedPagePurchaseRequest::class,
+            $parameters
+        );
     }
 
     /**
@@ -104,7 +125,10 @@ class ApiGateway extends AbstractGateway
      */
     public function capture(array $parameters = array())
     {
-        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\CaptureRequest::class, $parameters);
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\CaptureRequest::class,
+            $parameters
+        );
     }
 
     // Setters for various global settings.
