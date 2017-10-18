@@ -79,7 +79,16 @@ class ApiGateway extends AbstractGateway
      */
     public function authorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\AuthorizeRequest', $parameters);
+        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\AuthorizeRequest::class, $parameters);
+    }
+
+    /**
+     * The authorization transaction, through a hosted page.
+     * CHECKME: should we move this to a "HostedPage" API type?
+     */
+    public function hostedPageAuthorize(array $parameters = array())
+    {
+        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\HostedPageAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -87,7 +96,7 @@ class ApiGateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\PurchaseRequest', $parameters);
+        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\PurchaseRequest::class, $parameters);
     }
 
     /**
@@ -95,6 +104,6 @@ class ApiGateway extends AbstractGateway
      */
     public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\AuthorizeNetApi\Message\CaptureRequest', $parameters);
+        return $this->createRequest(\Omnipay\AuthorizeNetApi\Message\CaptureRequest::class, $parameters);
     }
 }

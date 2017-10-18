@@ -3,7 +3,7 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- *
+ * The features of the basic envelope for all responses.
  */
 
 use Omnipay\Common\Message\AbstractResponse as OmnipayAbstractResponse;
@@ -12,10 +12,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Omnipay\Common\Message\RequestInterface;
 use Academe\AuthorizeNet\Response\Response;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-
-//use Academe\AuthorizeNet\Auth\MerchantAuthentication;
-//use Academe\AuthorizeNet\TransactionRequestInterface;
-//use Academe\AuthorizeNet\Request\CreateTransaction;
 
 abstract class AbstractResponse extends OmnipayAbstractResponse
 {
@@ -138,11 +134,31 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     }
 
     /**
+     * Get the transaction message text from the response envelope.
+     * Inheriting responses will normally refine this to look deeper into
+     * the response body.
+     */
+    public function getMessage()
+    {
+        return $this->getResponseMessage();
+    }
+
+    /**
      * Get the first top-level message code.
      */
     public function getResponseCode()
     {
         return $this->getValue('messages.first.code');
+    }
+
+    /**
+     * Return the message code from the response envelope.
+     * Inheriting responses will normally refine this to look deeper into
+     * the response body.
+     */
+    public function getCode()
+    {
+        return $this->getResponseCode();
     }
 
     /**
@@ -159,6 +175,11 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
      * still represent a failed transaction.
      */
     public function responseIsSuccessful()
+    {
+        return $this->getResultCode() === Response::RESULT_CODE_OK;
+    }
+
+    public function isSuccessful()
     {
         return $this->getResultCode() === Response::RESULT_CODE_OK;
     }

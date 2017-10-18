@@ -22,12 +22,16 @@ use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
 use Money\Parser\DecimalMoneyParser;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
-use Money\Money;
+
+//use Money\Money;
 
 class AuthorizeRequest extends AbstractRequest
 {
     /**
-     * Return the complete message object.
+     * Return the complete transaction object which will later be wrapped in
+     * a \Academe\AuthorizeNet\Request\CreateTransaction object.
+     *
+     * @returns \Academe\AuthorizeNet\TransactionRequestInterface
      */
     public function getData()
     {
@@ -110,6 +114,8 @@ class AuthorizeRequest extends AbstractRequest
             }
         } // credit card
 
+        // TODO: allow "Accept JS" nonce (in two parts) instead of card (aka OpaqueData).
+
         if ($this->getClientIp()) {
             $transaction = $transaction->withCustomerIp($this->getClientIp());
         }
@@ -160,7 +166,9 @@ class AuthorizeRequest extends AbstractRequest
                 // We probably need to take the quantity into account to calculate
                 // the unit price.
 
+                // Wrap in a MoneyPhp object for the AmountInterface.
                 $amount = new MoneyPhp(
+                    // Parse to a Money object.
                     $moneyParser->parse((string)$item->getPrice(), $this->getCurrency())
                 );
 
@@ -169,8 +177,8 @@ class AuthorizeRequest extends AbstractRequest
                     $item->getName(),
                     $item->getDescription(),
                     $item->getQuantity(),
-                    $amount, //AmountInterface
-                    null //$taxable
+                    $amount, // AmountInterface
+                    null // $taxable
                 );
 
                 $lineItems->push($lineItem);

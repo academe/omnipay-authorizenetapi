@@ -3,7 +3,8 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- *
+ * The TransactionResponse can contain full details of a transaction
+ * creation or fetch result, or errors.
  */
 
 use Academe\AuthorizeNet\Response\Collections\TransactionMessages;
@@ -33,7 +34,7 @@ class TransactionResponse extends AbstractResponse
         // So I don't trust the data type we get back, and we will play loose and
         // fast with implicit conversions here.
 
-        return $this->responseIsSuccessful()
+        return parent::isSuccessful()
             && $this->getResponseCode() == TransactionResponseModel::RESPONSE_CODE_APPROVED;
     }
 
@@ -101,16 +102,16 @@ class TransactionResponse extends AbstractResponse
      */
     public function getCode()
     {
-        return $this->getTransactionCode() ?: $this->getResponseCode();
+        return $this->getTransactionCode() ?: parent::getCode();
     }
 
     /**
-     * Get the transaction message code if available, falling back
+     * Get the transaction message text if available, falling back
      * to the response envelope.
      */
     public function getMessage()
     {
-        return $this->getTransactionMessage() ?: $this->getResponseMessage();
+        return $this->getTransactionMessage() ?: parent::getMessage();
     }
 
     /**

@@ -3,7 +3,8 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- *
+ * TODO: Soem of these methods are relevant only to a transaction, so could
+ * be moved to an intermendiate transaction request abstract.
  */
 
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
@@ -17,7 +18,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      * The live and test gateway endpoints.
      */
     protected $endpointSandbox = 'https://apitest.authorize.net/xml/v1/request.api';
-    protected $endpointLive = 'https://apitest.authorize.net/xml/v1/request.api'; // TBC
+    protected $endpointLive = 'https://api.authorize.net/xml/v1/request.api';
 
     /**
      * Get the authentication credentials object.
@@ -84,7 +85,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function sendTransaction(TransactionRequestInterface $transaction)
     {
         // Wrap the transaction detail into a request.
-        $request =  new CreateTransaction($this->getAuth(), $transaction);
+        $request = $this->wrapTransaction($this->getAuth(), $transaction);
 
         // The merchant site ID.
         $request = $request->withRefId($this->getTransactionId());
@@ -104,6 +105,15 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
         // Return a data response.
         return $data;
+    }
+
+    /**
+     * Wrap the transaction detail into a full request for an action on
+     * the transaction.
+     */
+    protected function wrapTransaction($auth, $transaction)
+    {
+        return new CreateTransaction($auth, $transaction);
     }
 
     /**
