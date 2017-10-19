@@ -65,4 +65,26 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     {
         return $this->getParameter('transactionKey');
     }
+
+    /**
+     * The capture transaction.
+     */
+    public function capture(array $parameters = array())
+    {
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\CaptureRequest::class,
+            $parameters
+        );
+    }
+
+    /**
+     * Fetch a transaction.
+     */
+    public function fetchTransaction(array $parameters = array())
+    {
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\FetchTransactionRequest::class,
+            $parameters
+        );
+    }
 }

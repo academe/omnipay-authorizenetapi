@@ -11,6 +11,7 @@ use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 use Academe\AuthorizeNet\Auth\MerchantAuthentication;
 use Academe\AuthorizeNet\TransactionRequestInterface;
 use Academe\AuthorizeNet\Request\CreateTransaction;
+use Academe\AuthorizeNet\Request\AbstractRequest as ApiAbstractRequest;
 
 abstract class AbstractRequest extends OmnipayAbstractRequest
 {
@@ -77,8 +78,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      * to perform the action. Requests that involve profiles, fetching
      * information, won't involve transactions.
      *
-     * TODO: handle unexpected results and HTTP return codes.
-     *
      * @param TransactionRequestInterface $transaction The transaction object
      * @return array The decoded data returned by the gateway.
      */
@@ -90,8 +89,21 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         // The merchant site ID.
         $request = $request->withRefId($this->getTransactionId());
 
+        return $this->sendMessage($request);
+    }
+
+    /** 
+     * Send a messgae and return the resulting decoded response data.
+     *
+     * TODO: handle unexpected results and HTTP return codes.
+     *
+     * @param ApiAbstractRequest $message The hydrated request message
+     *      (from the academe/authorizenet-objects package)
+     */
+    protected function sendMessage(ApiAbstractRequest $message)
+    {
         // Send the request to the gateway.
-        $response = $this->sendRequest($request);
+        $response = $this->sendRequest($message);
 
         // The caller will know what object to put this data into.
         $body = (string)($response->getBody());
