@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\AuthorizeNetApi\Message;
+namespace Omnipay\AuthorizeNetApi\Message\HostedPage;
 
 /**
  * Also known as "Authorize.Net Accept Hosted".
@@ -9,7 +9,7 @@ namespace Omnipay\AuthorizeNetApi\Message;
 use Academe\AuthorizeNet\Request\Transaction\AuthCapture;
 use Academe\AuthorizeNet\AmountInterface;
 
-class HostedPagePurchaseRequest extends HostedPageAuthorizeRequest
+class PurchaseRequest extends AuthorizeRequest
 {
     /**
      * Create a new instance of the transaction object.

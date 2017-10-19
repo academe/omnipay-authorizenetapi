@@ -7,7 +7,6 @@ namespace Omnipay\AuthorizeNetApi;
  */
 
 use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\AbstractGateway;
 
 class ApiGateway extends AbstractGateway
 {
@@ -20,79 +19,12 @@ class ApiGateway extends AbstractGateway
     }
 
     /**
-     *
-     */
-    public function getDefaultParameters()
-    {
-        return array(
-            // Required.
-            // The name assigned for th application.
-            'authName' => '',
-            // Required.
-            // The access token assigned to this application.
-            'transactionKey' => '',
-            // Optional.
-            // Either mobileDeviceId or refId can be provided.
-            'mobileDeviceId' => '',
-            'refId' => '',
-            // True to run against the sandbox.
-            'testMode' => false,
-        );
-    }
-
-    /**
-     * The application auth name.
-     */
-    public function setAuthName($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Auth name must be a string.');
-        }
-
-        return $this->setParameter('authName', $value);
-    }
-
-    public function getAuthName()
-    {
-        return $this->getParameter('authName');
-    }
-
-    /**
-     * The application auth transaction key.
-     */
-    public function setTransactionKey($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Transaction Key must be a string.');
-        }
-
-        return $this->setParameter('transactionKey', $value);
-    }
-
-    public function getTransactionKey()
-    {
-        return $this->getParameter('transactionKey');
-    }
-
-    /**
      * The authorization transaction.
      */
     public function authorize(array $parameters = array())
     {
         return $this->createRequest(
             \Omnipay\AuthorizeNetApi\Message\AuthorizeRequest::class,
-            $parameters
-        );
-    }
-
-    /**
-     * The authorization transaction, through a hosted page.
-     * CHECKME: should we move this to a "HostedPage" API type?
-     */
-    public function hostedPageAuthorize(array $parameters = array())
-    {
-        return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\HostedPageAuthorizeRequest::class,
             $parameters
         );
     }
@@ -109,18 +41,6 @@ class ApiGateway extends AbstractGateway
     }
 
     /**
-     * The purchase transaction, through a hosted page.
-     * CHECKME: should we move this to a "HostedPage" API type?
-     */
-    public function hostedPagePurchase(array $parameters = array())
-    {
-        return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\HostedPagePurchaseRequest::class,
-            $parameters
-        );
-    }
-
-    /**
      * The capture transaction.
      */
     public function capture(array $parameters = array())
@@ -131,21 +51,14 @@ class ApiGateway extends AbstractGateway
         );
     }
 
-    // Setters for various global settings.
-
     /**
-     * Used only by the hosted payment page at this time.
+     * Fetch a transaction.
      */
-    public function setCancelUrl($value)
+    public function fetchTransaction(array $parameters = array())
     {
-        $this->setParameter('cancelUrl', $value);
-    }
-
-    /**
-     * Used only by the hosted payment page at this time.
-     */
-    public function setReturnUrl($value)
-    {
-        $this->setParameter('returnUrl', $value);
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\FetchTransactionRequest::class,
+            $parameters
+        );
     }
 }

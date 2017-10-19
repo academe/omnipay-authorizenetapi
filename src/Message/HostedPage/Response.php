@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\AuthorizeNetApi\Message;
+namespace Omnipay\AuthorizeNetApi\Message\HostedPage;
 
 /**
  * The HostedPage Response contains the token needed to redirect to
@@ -8,8 +8,9 @@ namespace Omnipay\AuthorizeNetApi\Message;
  */
 
 use Omnipay\Common\Message\RedirectResponseInterface;
+use Omnipay\AuthorizeNetApi\Message\AbstractResponse;
 
-class HostedPageResponse extends AbstractResponse implements RedirectResponseInterface
+class Response extends AbstractResponse implements RedirectResponseInterface
 {
     /**
      * The live and test hosted payment page enpoints.

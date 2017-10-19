@@ -3,7 +3,7 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- *
+ * The main authorisation transaction request model.
  */
 
 use Academe\AuthorizeNet\Request\Transaction\AuthOnly;
@@ -19,11 +19,10 @@ use Academe\AuthorizeNet\Payment\Track2;
 use Academe\AuthorizeNet\Collections\LineItems;
 use Academe\AuthorizeNet\Request\Model\LineItem;
 use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
+
 use Money\Parser\DecimalMoneyParser;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
-
-//use Money\Money;
 
 class AuthorizeRequest extends AbstractRequest
 {

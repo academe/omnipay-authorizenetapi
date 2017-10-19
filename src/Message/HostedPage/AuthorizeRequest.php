@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\AuthorizeNetApi\Message;
+namespace Omnipay\AuthorizeNetApi\Message\HostedPage;
 
 /**
  * Also known as "Authorize.Net Accept Hosted".
@@ -9,8 +9,9 @@ namespace Omnipay\AuthorizeNetApi\Message;
 use Academe\AuthorizeNet\Request\GetHostedPaymentPage;
 use Academe\AuthorizeNet\Collections\HostedPaymentSettings;
 use Academe\AuthorizeNet\Request\Model\HostedPaymentSetting;
+use Omnipay\AuthorizeNetApi\Message\AuthorizeRequest as ApiAuthorizeRequest;
 
-class HostedPageAuthorizeRequest extends AuthorizeRequest
+class AuthorizeRequest extends ApiAuthorizeRequest
 {
     /**
      * @var HostedPaymentSettings
@@ -63,7 +64,7 @@ class HostedPageAuthorizeRequest extends AuthorizeRequest
     {
         $response_data = $this->sendTransaction($data);
 
-        $response = new HostedPageResponse($this, $response_data);
+        $response = new Response($this, $response_data);
 
         // The response needs to know whether we are in test mode or not,
         // so that it chooses the correct hosted page URL to redirect to.

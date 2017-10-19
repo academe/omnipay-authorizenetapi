@@ -19,12 +19,14 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Omnipay\\AuthorizeNetApi\\" : "src/" }
+        "psr-4": {
+            "Omnipay\\AuthorizeNetApi\\": "src/"
+        }
     },
     "require": {
         "php": ">=5.6",
         "omnipay/common": "dev-master",
-        "academe/authorizenet": "dev-master",
+        "academe/authorizenet-objects": "dev-master",
         "symfony/property-access": "^3.2"
     },
     "require-dev": {
