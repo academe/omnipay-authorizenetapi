@@ -213,7 +213,7 @@ class AuthorizeRequest extends AbstractRequest
     {
         $response_data = $this->sendTransaction($data);
 
-        return new TransactionResponse($this, $response_data);
+        return new AuthorizeResponse($this, $response_data);
     }
 
     /**

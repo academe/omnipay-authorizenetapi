@@ -13,7 +13,7 @@ use Omnipay\Common\Message\RequestInterface;
 use Academe\AuthorizeNet\Response\Response;
 use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionResponseModel;
 
-class TransactionResponse extends AbstractResponse
+class AuthorizeResponse extends AbstractResponse
 {
     public function __construct(RequestInterface $request, $data)
     {

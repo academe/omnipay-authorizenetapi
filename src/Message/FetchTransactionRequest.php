@@ -49,6 +49,6 @@ class FetchTransactionRequest extends AbstractRequest
         // In fact, the overall structure is very different, even though it
         // is constructed largely of the same buidling blocks.
 
-        return new TransactionResponse($this, $response_data);
+        return new AuthorizeResponse($this, $response_data);
     }
 }
