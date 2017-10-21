@@ -15,6 +15,11 @@ use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionRespon
 
 class AuthorizeResponse extends AbstractResponse
 {
+    /**
+     * The property the transaction can be found in
+     */
+    protected $transactionIndex = 'transactionResponse';
+
     public function __construct(RequestInterface $request, $data)
     {
         // Parse the request.
@@ -53,7 +58,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getResponseCode()
     {
-        return $this->getValue('transactionResponse.responseCode');
+        return $this->getValue($this->transactionIndex . '.responseCode');
     }
 
     /**
@@ -63,7 +68,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransactionMessages()
     {
-        return $this->getValue('transactionResponse.transactionMessages')
+        return $this->getValue($this->transactionIndex . '.transactionMessages')
             ?: new TransactionMessages();
     }
 
@@ -74,7 +79,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransactionErrors()
     {
-        return $this->getValue('transactionResponse.errors')
+        return $this->getValue($this->transactionIndex . '.errors')
             ?: new Errors();
     }
 
@@ -83,8 +88,8 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransactionMessage()
     {
-        return $this->getValue('transactionResponse.errors.first.text')
-            ?: $this->getValue('transactionResponse.transactionMessages.first.text');
+        return $this->getValue($this->transactionIndex . '.errors.first.text')
+            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.text');
     }
 
     /**
@@ -92,8 +97,8 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransactionCode()
     {
-        return $this->getValue('transactionResponse.errors.first.code')
-            ?: $this->getValue('transactionResponse.transactionMessages.first.code');
+        return $this->getValue($this->transactionIndex . '.errors.first.code')
+            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.code');
     }
 
     /**
@@ -119,7 +124,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        return $this->getValue('transactionResponse.transId');
+        return $this->getValue($this->transactionIndex . '.transId');
     }
 
     /**
@@ -127,7 +132,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getAuthCode()
     {
-        return $this->getValue('transactionResponse.authCode');
+        return $this->getValue($this->transactionIndex . '.authCode');
     }
 
     /**
@@ -135,7 +140,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getAvsResultCode()
     {
-        return $this->getValue('transactionResponse.avsResultCode');
+        return $this->getValue($this->transactionIndex . '.avsResultCode');
     }
 
     /**
@@ -143,7 +148,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getCvvResultCode()
     {
-        return $this->getValue('transactionResponse.cvvResultCode');
+        return $this->getValue($this->transactionIndex . '.cvvResultCode');
     }
 
     /**
@@ -151,7 +156,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getCavvResultCode()
     {
-        return $this->getValue('transactionResponse.cavvResultCode');
+        return $this->getValue($this->transactionIndex . '.cavvResultCode');
     }
 
     /**
@@ -160,7 +165,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getRefTransID()
     {
-        return $this->getValue('transactionResponse.refTransID');
+        return $this->getValue($this->transactionIndex . '.refTransID');
     }
 
     /**
@@ -168,7 +173,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getTransHash()
     {
-        return $this->getValue('transactionResponse.transHash');
+        return $this->getValue($this->transactionIndex . '.transHash');
     }
 
     /**
@@ -177,7 +182,7 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getAccountNumber()
     {
-        return $this->getValue('transactionResponse.accountNumber');
+        return $this->getValue($this->transactionIndex . '.accountNumber');
     }
 
     /**
@@ -186,6 +191,6 @@ class AuthorizeResponse extends AbstractResponse
      */
     public function getAccountType()
     {
-        return $this->getValue('transactionResponse.accountType');
+        return $this->getValue($this->transactionIndex . '.accountType');
     }
 }

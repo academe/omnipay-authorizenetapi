@@ -7,10 +7,12 @@ namespace Omnipay\AuthorizeNetApi\Message;
  */
 
 use Omnipay\Common\Message\AbstractResponse as OmnipayAbstractResponse;
+use Omnipay\Common\Message\RequestInterface;
+
+use Academe\AuthorizeNet\Response\Response;
+
 use Symfony\Component\PropertyAccess\Exception\ExceptionInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Omnipay\Common\Message\RequestInterface;
-use Academe\AuthorizeNet\Response\Response;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 abstract class AbstractResponse extends OmnipayAbstractResponse

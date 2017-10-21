@@ -3,12 +3,8 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- * Fetch a transaction by transactionId or transactionReference.
+ * Fetch a transaction by transactionReference.
  */
-
-//use Academe\AuthorizeNet\Request\GetHostedPaymentPage;
-//use Academe\AuthorizeNet\Collections\HostedPaymentSettings;
-//use Academe\AuthorizeNet\Request\Model\HostedPaymentSetting;
 
 use Academe\AuthorizeNet\Request\GetTransactionDetails;
 
@@ -43,12 +39,6 @@ class FetchTransactionRequest extends AbstractRequest
         $response_data = $this->sendMessage($data);
 
         // We should be getting a transactino back.
-        // TODO: however, there are a few additional fields to add, such as
-        // event timestamps and batch details, authorised amount vs settled
-        // amount, line items, final billing, shipping deails, etc.
-        // In fact, the overall structure is very different, even though it
-        // is constructed largely of the same buidling blocks.
-
-        return new AuthorizeResponse($this, $response_data);
+        return new TransactionResponse($this, $response_data);
     }
 }
