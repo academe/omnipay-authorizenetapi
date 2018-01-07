@@ -29,6 +29,8 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
             'refId' => '',
             // True to run against the sandbox.
             'testMode' => false,
+            // The shared key used to sign notifications.
+            'signatureKey' => '',
         );
     }
 
@@ -67,9 +69,30 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     }
 
     /**
+     * The shared signature key.used to sign notifications sent by the
+     * webhooks in the X-Anet-Signature HTTP header.
+     * Only needed when receiving a notification.
+     * Optional; the signature hash will only be checked if the signature
+     * is supplied.
+     */
+    public function setSignatureKey($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidRequestException('Signature Key must be a string.');
+        }
+
+        return $this->setParameter('signatureKey', $value);
+    }
+
+    public function getSignatureKey()
+    {
+        return $this->getParameter('signatureKey');
+    }
+
+    /**
      * The capture transaction.
      */
-    public function capture(array $parameters = array())
+    public function capture(array $parameters = [])
     {
         return $this->createRequest(
             \Omnipay\AuthorizeNetApi\Message\CaptureRequest::class,
@@ -80,10 +103,21 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     /**
      * Fetch a transaction.
      */
-    public function fetchTransaction(array $parameters = array())
+    public function fetchTransaction(array $parameters = [])
     {
         return $this->createRequest(
             \Omnipay\AuthorizeNetApi\Message\FetchTransactionRequest::class,
+            $parameters
+        );
+    }
+
+    /**
+     * Handle notifcation server requests (webhooks).
+     */
+    public function acceptNotification(array $parameters = [])
+    {
+        return $this->createRequest(
+            \Omnipay\AuthorizeNetApi\Message\AcceptNotification::class,
             $parameters
         );
     }

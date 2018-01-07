@@ -8,6 +8,7 @@ namespace Omnipay\AuthorizeNetApi\Message;
  */
 
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
+
 use Academe\AuthorizeNet\Auth\MerchantAuthentication;
 use Academe\AuthorizeNet\TransactionRequestInterface;
 use Academe\AuthorizeNet\Request\CreateTransaction;

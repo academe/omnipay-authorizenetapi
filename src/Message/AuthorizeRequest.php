@@ -16,7 +16,7 @@ use Academe\AuthorizeNet\Request\Model\Order;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
-use Academe\AuthorizeNet\Collections\LineItems;
+use Academe\AuthorizeNet\Request\Collections\LineItems;
 use Academe\AuthorizeNet\Request\Model\LineItem;
 use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
 
