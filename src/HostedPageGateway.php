@@ -7,12 +7,15 @@ namespace Omnipay\AuthorizeNetApi;
  */
 
 use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Exception\HasHostedPageGatewayParams;
 
 use Omnipay\AuthorizeNetApi\Message\HostedPage\AuthorizeRequest;
 use Omnipay\AuthorizeNetApi\Message\HostedPage\PurchaseRequest;
 
 class HostedPageGateway extends AbstractGateway
 {
+    use HasHostedPageGatewayParams;
+
     /**
      * The common name for this gateway driver API.
      */
@@ -41,23 +44,5 @@ class HostedPageGateway extends AbstractGateway
             PurchaseRequest::class,
             $parameters
         );
-    }
-
-    // Setters for various global settings.
-
-    /**
-     * Used only by the hosted payment page at this time.
-     */
-    public function setCancelUrl($value)
-    {
-        $this->setParameter('cancelUrl', $value);
-    }
-
-    /**
-     * Used only by the hosted payment page at this time.
-     */
-    public function setReturnUrl($value)
-    {
-        $this->setParameter('returnUrl', $value);
     }
 }
