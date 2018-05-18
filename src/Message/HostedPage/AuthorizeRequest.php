@@ -26,7 +26,7 @@ class AuthorizeRequest extends ApiAuthorizeRequest
     {
         $request = new GetHostedPaymentPage($auth, $transaction);
 
-        // The Hosted Payment Page settings are at the request level, so 
+        // The Hosted Payment Page settings are at the request level, so
         // they cannot be set until we are wrapping the transaction into the request.
         // Set any individual parameters that map to standard Omnpay parameters first.
 
@@ -80,7 +80,7 @@ class AuthorizeRequest extends ApiAuthorizeRequest
      */
     public function setHostedPaymentSettings(array $value)
     {
-        foreach($value as $name => $value) {
+        foreach ($value as $name => $value) {
             $this->setHostedPaymentSetting($name, $value);
         }
     }

@@ -8,6 +8,9 @@ namespace Omnipay\AuthorizeNetApi;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 
+use Omnipay\AuthorizeNetApi\Message\HostedPage\AuthorizeRequest;
+use Omnipay\AuthorizeNetApi\Message\HostedPage\PurchaseRequest;
+
 class HostedPageGateway extends AbstractGateway
 {
     /**
@@ -24,7 +27,7 @@ class HostedPageGateway extends AbstractGateway
     public function authorize(array $parameters = array())
     {
         return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\HostedPage\AuthorizeRequest::class,
+            AuthorizeRequest::class,
             $parameters
         );
     }
@@ -35,7 +38,7 @@ class HostedPageGateway extends AbstractGateway
     public function purchase(array $parameters = array())
     {
         return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\HostedPage\PurchaseRequest::class,
+            PurchaseRequest::class,
             $parameters
         );
     }

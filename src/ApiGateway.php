@@ -8,6 +8,9 @@ namespace Omnipay\AuthorizeNetApi;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 
+use Omnipay\AuthorizeNetApi\Message\AuthorizeRequest;
+use Omnipay\AuthorizeNetApi\Message\PurchaseRequest;
+
 class ApiGateway extends AbstractGateway
 {
     /**
@@ -24,7 +27,7 @@ class ApiGateway extends AbstractGateway
     public function authorize(array $parameters = array())
     {
         return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\AuthorizeRequest::class,
+            AuthorizeRequest::class,
             $parameters
         );
     }
@@ -35,7 +38,7 @@ class ApiGateway extends AbstractGateway
     public function purchase(array $parameters = array())
     {
         return $this->createRequest(
-            \Omnipay\AuthorizeNetApi\Message\PurchaseRequest::class,
+            PurchaseRequest::class,
             $parameters
         );
     }

@@ -10,7 +10,7 @@ class PurchaseRequest extends AuthorizeRequest
     /**
      * Create a new instance of the transaction object.
      */
-     protected function createTransaction(AmountInterface $amount)
+    protected function createTransaction(AmountInterface $amount)
     {
         return new AuthCapture($amount);
     }

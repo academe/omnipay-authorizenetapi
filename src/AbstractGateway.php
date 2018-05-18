@@ -8,9 +8,12 @@ namespace Omnipay\AuthorizeNetApi;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\AbstractGateway as OmnipayAbstractGateway;
+use Omnipay\AuthorizeNetApi\Traits\HasGatewayParams;
 
 abstract class AbstractGateway extends OmnipayAbstractGateway
 {
+    use HasGatewayParams;
+
     /**
      *
      */
@@ -32,61 +35,6 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
             // The shared key used to sign notifications.
             'signatureKey' => '',
         );
-    }
-
-    /**
-     * The application auth name.
-     */
-    public function setAuthName($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Auth name must be a string.');
-        }
-
-        return $this->setParameter('authName', $value);
-    }
-
-    public function getAuthName()
-    {
-        return $this->getParameter('authName');
-    }
-
-    /**
-     * The application auth transaction key.
-     */
-    public function setTransactionKey($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Transaction Key must be a string.');
-        }
-
-        return $this->setParameter('transactionKey', $value);
-    }
-
-    public function getTransactionKey()
-    {
-        return $this->getParameter('transactionKey');
-    }
-
-    /**
-     * The shared signature key.used to sign notifications sent by the
-     * webhooks in the X-Anet-Signature HTTP header.
-     * Only needed when receiving a notification.
-     * Optional; the signature hash will only be checked if the signature
-     * is supplied.
-     */
-    public function setSignatureKey($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Signature Key must be a string.');
-        }
-
-        return $this->setParameter('signatureKey', $value);
-    }
-
-    public function getSignatureKey()
-    {
-        return $this->getParameter('signatureKey');
     }
 
     /**

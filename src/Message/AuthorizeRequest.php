@@ -160,7 +160,7 @@ class AuthorizeRequest extends AbstractRequest
             $currencies = new ISOCurrencies();
             $moneyParser = new DecimalMoneyParser($currencies);
 
-            foreach($this->getItems() as $itemId => $item) {
+            foreach ($this->getItems() as $itemId => $item) {
                 // FIXME: This is actually the line price, and not the unit price.
                 // We probably need to take the quantity into account to calculate
                 // the unit price.
@@ -198,7 +198,7 @@ class AuthorizeRequest extends AbstractRequest
     /**
      * Create a new instance of the transaction object.
      */
-     protected function createTransaction(AmountInterface $amount)
+    protected function createTransaction(AmountInterface $amount)
     {
         return new AuthOnly($amount);
     }

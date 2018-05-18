@@ -13,9 +13,12 @@ use Academe\AuthorizeNet\Auth\MerchantAuthentication;
 use Academe\AuthorizeNet\TransactionRequestInterface;
 use Academe\AuthorizeNet\Request\CreateTransaction;
 use Academe\AuthorizeNet\Request\AbstractRequest as ApiAbstractRequest;
+use Omnipay\AuthorizeNetApi\Traits\HasGatewayParams;
 
 abstract class AbstractRequest extends OmnipayAbstractRequest
 {
+    use HasGatewayParams;
+
     /**
      * The live and test gateway endpoints.
      */
@@ -93,7 +96,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         return $this->sendMessage($request);
     }
 
-    /** 
+    /**
      * Send a messgae and return the resulting decoded response data.
      *
      * TODO: handle unexpected results and HTTP return codes.

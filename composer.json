@@ -24,14 +24,13 @@
         }
     },
     "require": {
-        "php": ">=5.6",
-        "omnipay/common": "dev-master",
-        "academe/authorizenet-objects": "dev-master",
+        "omnipay/common": "^3",
+        "academe/authorizenet-objects": "^0.6",
         "symfony/property-access": "^3.2"
     },
     "require-dev": {
-        "omnipay/tests": "^3.0@dev",
-        "squizlabs/php_codesniffer": "^3.0@dev"
+        "omnipay/tests": "^3",
+        "squizlabs/php_codesniffer": "^3"
     },
     "extra": {
         "branch-alias": {
