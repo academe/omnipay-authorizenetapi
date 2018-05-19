@@ -8,6 +8,7 @@ namespace Omnipay\AuthorizeNetApi\Message;
 
 use Academe\AuthorizeNet\Request\Transaction\AuthOnly;
 use Academe\AuthorizeNet\Amount\MoneyPhp;
+use Academe\AuthorizeNet\Amount\Amount;
 use Academe\AuthorizeNet\Request\Model\NameAddress;
 use Academe\AuthorizeNet\Payment\CreditCard;
 use Academe\AuthorizeNet\Request\Model\Customer;
@@ -22,6 +23,7 @@ use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
 
 use Money\Parser\DecimalMoneyParser;
 use Money\Currencies\ISOCurrencies;
+use Money\Money;
 use Money\Currency;
 
 class AuthorizeRequest extends AbstractRequest
@@ -34,7 +36,14 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function getData()
     {
-        $amount = new MoneyPhp($this->getMoney());
+        /*$amount = new MoneyPhp(
+            new Money(
+                $this->getAmountInteger(),
+                new Currency($this->getCurrency())
+            )
+        );*/
+
+        $amount = new Amount($this->getCurrency(), $this->getAmountInteger());
 
         $transaction = $this->createTransaction($amount);
 
@@ -211,9 +220,9 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        $response_data = $this->sendTransaction($data);
+        $responseData = $this->sendTransaction($data);
 
-        return new AuthorizeResponse($this, $response_data);
+        return new AuthorizeResponse($this, $responseData);
     }
 
     /**

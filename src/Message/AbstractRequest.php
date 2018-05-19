@@ -53,7 +53,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      */
     protected function sendRequest($data, $method = 'POST')
     {
-        $httpRequest = $this->httpClient->createRequest(
+        $response = $this->httpClient->request(
             $method,
             $this->getEndpoint(),
             array(
@@ -62,7 +62,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
             json_encode($data)
         );
 
-        return $this->httpClient->sendRequest($httpRequest);
+        return $response;
     }
 
     /**
