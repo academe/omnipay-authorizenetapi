@@ -7,8 +7,8 @@ namespace Omnipay\AuthorizeNetApi;
  */
 
 use Omnipay\Common\Exception\InvalidRequestException;
-use Omnipay\Common\Exception\HasHostedPageGatewayParams;
 
+use Omnipay\AuthorizeNetApi\Traits\HasHostedPageGatewayParams;
 use Omnipay\AuthorizeNetApi\Message\HostedPage\AuthorizeRequest;
 use Omnipay\AuthorizeNetApi\Message\HostedPage\PurchaseRequest;
 

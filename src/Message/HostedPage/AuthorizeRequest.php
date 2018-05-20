@@ -7,8 +7,9 @@ namespace Omnipay\AuthorizeNetApi\Message\HostedPage;
  */
 
 use Academe\AuthorizeNet\Request\GetHostedPaymentPage;
-use Academe\AuthorizeNet\Collections\HostedPaymentSettings;
+use Academe\AuthorizeNet\Request\Collections\HostedPaymentSettings;
 use Academe\AuthorizeNet\Request\Model\HostedPaymentSetting;
+
 use Omnipay\AuthorizeNetApi\Message\AuthorizeRequest as ApiAuthorizeRequest;
 use Omnipay\AuthorizeNetApi\Traits\HasHostedPageGatewayParams;
 

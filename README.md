@@ -108,3 +108,41 @@ $response = $gateway->fetchTransaction([
 ])->send();
 ```
 
+The Hosted Payment Page will host the payment form on the gateway.
+The form can be presented to the user as a full page or in an iframe.
+
+The Hosted Payment Page is a different gateway:
+
+```php
+$gateway = Omnipay\Omnipay::create('AuthorizeNetApi_HostedPage');
+```
+
+The gateway is configured the same way, and the authorize/purchase
+requests are created in the same way, except for the return and cancel URLs:
+
+```php
+$request = $gateway->authorize([
+    'amount' => $amount,
+    // etc.
+    'returnUrl' => 'return URL after the transaction is approved or rejected',
+    'cancelUrl' => 'URL to use if the user cancels the transaction',
+]);
+```
+
+The response will be a redirect, with the following details used to
+construct the redirect in the merchant site:
+
+```php
+$response = $request->send();
+
+$response->getRedirectMethod();
+// Usually "POST"
+
+$response->getRedirectUrl();
+// The redirect URL or POST form action.
+
+$response->getRedirectData()
+// Array of name/value elements used to construct hidden fields
+// in the POST form.
+```
+
