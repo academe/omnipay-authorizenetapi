@@ -205,7 +205,7 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
      */
     public function getNumberLastFour()
     {
-        return substr($this->getValue('transactionResponse.accountNumber'), -4, 4) ?: null;
+        return substr($this->getValue($this->transactionIndex . '.accountNumber'), -4, 4) ?: null;
     }
 
     /**
