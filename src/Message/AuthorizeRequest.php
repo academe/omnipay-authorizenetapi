@@ -36,13 +36,6 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function getData()
     {
-        /*$amount = new MoneyPhp(
-            new Money(
-                $this->getAmountInteger(),
-                new Currency($this->getCurrency())
-            )
-        );*/
-
         $amount = new Amount($this->getCurrency(), $this->getAmountInteger());
 
         $transaction = $this->createTransaction($amount);

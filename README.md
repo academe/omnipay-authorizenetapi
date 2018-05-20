@@ -68,3 +68,29 @@ $response = $gateway->capture([
     'transactionReference' => $transactionReference,
 ])->send();
 ```
+
+An authorized transaction can be voided:
+
+```php
+// Captured from the authorization response.
+$transactionReference = $response->getTransactionReference();
+
+$response = $gateway->void([
+    'transactionReference' => $transactionReference,
+])->send();
+```
+
+A cleared credit card payment can be refunded, given the original
+transaction reference, the original amount, and the last four digits
+of the credit card:
+
+```php
+$response = $gateway->refund([
+    'amount' => '7.99',
+    'currency' => 'USD',
+    'transactionReference' => $transactionReference,
+    'numberLastFour' => '1234',
+])->send();
+```
+
+

@@ -69,6 +69,6 @@ class CaptureRequest extends AbstractRequest
     {
         $response_data = $this->sendTransaction($data);
 
-        return new CaptureResponse($this, $response_data);
+        return new Response($this, $response_data);
     }
 }

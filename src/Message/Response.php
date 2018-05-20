@@ -10,10 +10,8 @@ namespace Omnipay\AuthorizeNetApi\Message;
 use Academe\AuthorizeNet\Response\Collections\TransactionMessages;
 use Academe\AuthorizeNet\Response\Collections\Errors;
 use Omnipay\Common\Message\RequestInterface;
-use Academe\AuthorizeNet\Response\Response;
-use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionResponseModel;
 
-class CaptureResponse extends AbstractResponse
+class Response extends AbstractResponse
 {
     public function __construct(RequestInterface $request, $data)
     {
