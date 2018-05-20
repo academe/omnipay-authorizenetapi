@@ -39,6 +39,6 @@ class FetchTransactionRequest extends AbstractRequest
         $response_data = $this->sendMessage($data);
 
         // We should be getting a transactino back.
-        return new TransactionResponse($this, $response_data);
+        return new FetchTransactionResponse($this, $response_data);
     }
 }

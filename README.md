@@ -99,4 +99,12 @@ $response = $gateway->refund([
 ])->send();
 ```
 
+An existing transaction can be fetched from the gateway given
+its `transactionReference`:
+
+```php
+$response = $gateway->fetchTransaction([
+    'transactionReference' => $transactionReference,
+])->send();
+```
 

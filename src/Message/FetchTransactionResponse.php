@@ -10,7 +10,7 @@ use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionRespon
 use Academe\AuthorizeNet\Response\Collections\TransactionMessages;
 use Academe\AuthorizeNet\Response\Collections\Errors;
 
-class TransactionResponse extends AuthorizeResponse
+class FetchTransactionResponse extends AuthorizeResponse
 {
     /**
      * The property the transaction can be found in

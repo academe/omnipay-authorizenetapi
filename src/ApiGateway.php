@@ -12,6 +12,7 @@ use Omnipay\AuthorizeNetApi\Message\AuthorizeRequest;
 use Omnipay\AuthorizeNetApi\Message\PurchaseRequest;
 use Omnipay\AuthorizeNetApi\Message\VoidRequest;
 use Omnipay\AuthorizeNetApi\Message\RefundRequest;
+use Omnipay\AuthorizeNetApi\Message\FetchTransactionRequest;
 
 class ApiGateway extends AbstractGateway
 {
@@ -26,7 +27,7 @@ class ApiGateway extends AbstractGateway
     /**
      * The authorization transaction.
      */
-    public function authorize(array $parameters = array())
+    public function authorize(array $parameters = [])
     {
         return $this->createRequest(
             AuthorizeRequest::class,
@@ -37,7 +38,7 @@ class ApiGateway extends AbstractGateway
     /**
      * The purchase transaction.
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
         return $this->createRequest(
             PurchaseRequest::class,
@@ -48,7 +49,7 @@ class ApiGateway extends AbstractGateway
     /**
      * Void an authorized transaction.
      */
-    public function void(array $parameters = array())
+    public function void(array $parameters = [])
     {
         return $this->createRequest(
             VoidRequest::class,
@@ -59,10 +60,21 @@ class ApiGateway extends AbstractGateway
     /**
      * Refund a captured transaction (before it is cleared).
      */
-    public function refund(array $parameters = array())
+    public function refund(array $parameters = [])
     {
         return $this->createRequest(
             RefundRequest::class,
+            $parameters
+        );
+    }
+
+    /**
+     * Fetch an existing transaction details.
+     */
+    public function fetchTransaction(array $parameters = [])
+    {
+        return $this->createRequest(
+            FetchTransactionRequest::class,
             $parameters
         );
     }
