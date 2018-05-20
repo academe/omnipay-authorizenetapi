@@ -3,6 +3,7 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 use Academe\AuthorizeNet\Amount\MoneyPhp;
+use Academe\AuthorizeNet\Amount\Amount;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Request\Transaction\PriorAuthCapture;
 use Academe\AuthorizeNet\Request\Transaction\CaptureOnly;
@@ -15,7 +16,7 @@ class CaptureRequest extends AbstractRequest
      */
     public function getData()
     {
-        $amount = new MoneyPhp($this->getMoney());
+        $amount = new Amount($this->getCurrency(), $this->getAmountInteger());
 
         // Identify the original transaction being authorised.
         $refTransId = $this->getTransactionReference();
@@ -59,12 +60,12 @@ class CaptureRequest extends AbstractRequest
      * Accept a transaction and sends it as a request.
      *
      * @param $data TransactionRequestInterface
-     * @returns TransactionResponse
+     * @returns CaptureResponse
      */
     public function sendData($data)
     {
         $response_data = $this->sendTransaction($data);
 
-        return new TransactionResponse($this, $response_data);
+        return new CaptureResponse($this, $response_data);
     }
 }

@@ -27,6 +27,11 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
      */
     protected $accessor;
 
+    /**
+     * The property the transaction can be found in
+     */
+    protected $transactionIndex = 'transactionResponse';
+
     public function __construct(RequestInterface $request, $data)
     {
         // Omnipay Common has some data to record.
@@ -37,9 +42,9 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     }
 
     /**
-     * Get a value from the persed data, based on a path.
-     * e.g. 'object.arrayProperty[0].stringProperty'
-     * Returns null if the dependency pathis broken at any point.
+     * Get a value from the parsed data, based on a path.
+     * e.g. 'object.arrayProperty[0].stringProperty'.
+     * Returns null if the dependency path is broken at any point.
      * See http://symfony.com/doc/current/components/property_access.html
      */
     public function getValue($path)
@@ -121,6 +126,10 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     /**
      * Get the first top-level result code.
      * Note this will be unsuitable for most transactions, as the response can
+     * be successful ("Ok") even while the transaction response is not.
+     * This is the result code of the envelope that the transaction response
+     * is returned in.
+     * e.g. "Ok"
      */
     public function getResultCode()
     {
@@ -129,6 +138,8 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
 
     /**
      * Get the first top-level message text.
+     * e.g. "Successful."
+     * e.g. "The transaction was unsuccessful."
      */
     public function getResponseMessage()
     {
@@ -146,7 +157,9 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     }
 
     /**
-     * Get the first top-level message code.
+     * Get the first top-level (i.e. message wrapper) message code.
+     * e.g. "I00001"
+     * e.g. "E00027"
      */
     public function getResponseCode()
     {
@@ -164,7 +177,7 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     }
 
     /**
-     * Get all top-level response message collection.
+     * Get all top-level (envelope) response message collection.
      */
     public function getResponseMessages()
     {
@@ -184,5 +197,40 @@ abstract class AbstractResponse extends OmnipayAbstractResponse
     public function isSuccessful()
     {
         return $this->getResultCode() === Response::RESULT_CODE_OK;
+    }
+
+    /**
+     * Return the last four digits of the crddit card used, if availale.
+     * @return string
+     */
+    public function getNumberLastFour()
+    {
+        return substr($this->getValue('transactionResponse.accountNumber'), -4, 4) ?: null;
+    }
+
+    /**
+     * Return the text of the first error or message in the transaction response.
+     */
+    public function getTransactionMessage()
+    {
+        return $this->getValue($this->transactionIndex . '.errors.first.text')
+            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.text');
+    }
+
+    /**
+     * Return the code of the first error or message in the transaction response.
+     */
+    public function getTransactionCode()
+    {
+        return $this->getValue($this->transactionIndex . '.errors.first.code')
+            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.code');
+    }
+
+    /**
+     * ID created for the transaction by the remote gateway.
+     */
+    public function getTransactionReference()
+    {
+        return $this->getValue($this->transactionIndex . '.transId');
     }
 }

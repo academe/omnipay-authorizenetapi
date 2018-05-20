@@ -133,40 +133,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
-     * The application auth name.
-     */
-    public function setAuthName($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidRequestException('Auth Name must be a string.');
-        }
-
-        return $this->setParameter('authName', $value);
-    }
-
-    public function getAuthName()
-    {
-        return $this->getParameter('authName');
-    }
-
-    /**
-     * The application auth transaction key.
-     */
-    public function setTransactionKey($value)
-    {
-        if (! is_string($value)) {
-            throw new InvalidRequestException('Transaction Key must be a string.');
-        }
-
-        return $this->setParameter('transactionKey', $value);
-    }
-
-    public function getTransactionKey()
-    {
-        return $this->getParameter('transactionKey');
-    }
-
-    /**
      * @param string Merchant-defined invoice number associated with the order.
      * @return $this
      */

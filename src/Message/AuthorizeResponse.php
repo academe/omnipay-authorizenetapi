@@ -15,14 +15,9 @@ use Academe\AuthorizeNet\Response\Model\TransactionResponse as TransactionRespon
 
 class AuthorizeResponse extends AbstractResponse
 {
-    /**
-     * The property the transaction can be found in
-     */
-    protected $transactionIndex = 'transactionResponse';
-
     public function __construct(RequestInterface $request, $data)
     {
-        // Parse the request.
+        // Parse the request into a structured object.
         parent::__construct($request, $data);
     }
 
@@ -84,24 +79,6 @@ class AuthorizeResponse extends AbstractResponse
     }
 
     /**
-     * Return the text of the first error or message in the transaction response.
-     */
-    public function getTransactionMessage()
-    {
-        return $this->getValue($this->transactionIndex . '.errors.first.text')
-            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.text');
-    }
-
-    /**
-     * Return the code of the first error or message in the transaction response.
-     */
-    public function getTransactionCode()
-    {
-        return $this->getValue($this->transactionIndex . '.errors.first.code')
-            ?: $this->getValue($this->transactionIndex . '.transactionMessages.first.code');
-    }
-
-    /**
      * Return the message code from the transaction if available,
      * or the response envelope.
      */
@@ -117,14 +94,6 @@ class AuthorizeResponse extends AbstractResponse
     public function getMessage()
     {
         return $this->getTransactionMessage() ?: parent::getMessage();
-    }
-
-    /**
-     * ID created for the transaction by the remote gateway.
-     */
-    public function getTransactionReference()
-    {
-        return $this->getValue($this->transactionIndex . '.transId');
     }
 
     /**
