@@ -1,4 +1,10 @@
 
+[![Build Status](https://travis-ci.org/academe/Omnipay-AuthorizeNetApi.svg?branch=master)](https://travis-ci.org/academe/Omnipay-AuthorizeNetApi)
+[![Latest Stable Version](https://poser.pugx.org/academe/omnipay-authorizenetapi/v/stable)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
+[![Total Downloads](https://poser.pugx.org/academe/omnipay-authorizenetapi/downloads)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
+[![Latest Unstable Version](https://poser.pugx.org/academe/omnipay-authorizenetapi/v/unstable)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
+[![License](https://poser.pugx.org/academe/omnipay-authorizenetapi/license)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
+
 # Omnipay-AuthorizeNetApi
 
 Omnipay 3.x implementation of Authorize.Net API
