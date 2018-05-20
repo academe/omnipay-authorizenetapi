@@ -5,7 +5,7 @@ Omnipay 3.x implementation of Authorize.Net API
 
 # Development Example
 
-This is under development and is not close to a production package.
+This is under development, but is usable within limitations.
 
 The following example is a simple authorize with known card details.
 You would normally avoid this particular method for PCI compliance reasons,
@@ -41,6 +41,8 @@ $response = $gateway->authorize([
     'card' => $creditCard,
 ])->send();
 
+// Or use $gateway->purchase() to immediately capture.
+
 var_dump($response->isSuccessful());
 // bool(true)
 
@@ -54,7 +56,7 @@ var_dump($response->getTransactionReference());
 // string(11) "60103474871"
 ```
 
-If athorized, the amount can be captured:
+If authorized, the amount can be captured:
 
 ```php
 // Captured from the authorization response.

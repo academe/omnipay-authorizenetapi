@@ -16,7 +16,10 @@ class CaptureRequest extends AbstractRequest
      */
     public function getData()
     {
-        $amount = new Amount($this->getCurrency(), $this->getAmountInteger());
+        $amount = new Amount(
+            $this->getCurrency(),
+            $this->getAmountInteger()
+        );
 
         // Identify the original transaction being authorised.
         $refTransId = $this->getTransactionReference();
@@ -43,7 +46,7 @@ class CaptureRequest extends AbstractRequest
     /**
      * Create a new instance of the transaction object.
      *
-     * - PriorAuthCapture is used for transactios authorised through
+     * - PriorAuthCapture is used for transactions authorised through
      *   the API, e.g. a credit card authorisation.
      * - CaptureOnly is used to capture amounts authorized through
      *   other channels, such as a telephone order (MOTO).

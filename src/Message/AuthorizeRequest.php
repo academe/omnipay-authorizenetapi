@@ -170,22 +170,26 @@ class AuthorizeRequest extends AbstractRequest
             $moneyParser = new DecimalMoneyParser($currencies);
 
             foreach ($this->getItems() as $itemId => $item) {
-                // FIXME: This is actually the line price, and not the unit price.
-                // We probably need to take the quantity into account to calculate
-                // the unit price.
+                // Parse to a Money object.
+                $itemMoney = $moneyParser->parse((string)$item->getPrice(), $this->getCurrency());
+
+                // Omnipay provides the line price, but the LineItem wants the unit price.
+                $itemQuantity = $item->getQuantity();
+
+                if (! empty($itemQuantity)) {
+                    // Divide the line price by the quantity to get the item price.
+                    $itemMoney = $itemMoney->divide($itemQuantity);
+                }
 
                 // Wrap in a MoneyPhp object for the AmountInterface.
-                $amount = new MoneyPhp(
-                    // Parse to a Money object.
-                    $moneyParser->parse((string)$item->getPrice(), $this->getCurrency())
-                );
+                $amount = new MoneyPhp($itemMoney);
 
                 $lineItem = new LineItem(
                     $itemId,
                     $item->getName(),
                     $item->getDescription(),
-                    $item->getQuantity(),
-                    $amount, // AmountInterface
+                    $itemQuantity,
+                    $amount, // AmountInterface (unit price)
                     null // $taxable
                 );
 
