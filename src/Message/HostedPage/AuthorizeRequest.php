@@ -99,7 +99,7 @@ class AuthorizeRequest extends ApiAuthorizeRequest
 
     /**
      * @param mixed $name The Name of the setting,
-     *      one of \Academe\AuthorizeNet\Request\Model\HostedPaymentSetting::SETTING_NAME_*
+     *   one of \Academe\AuthorizeNet\Request\Model\HostedPaymentSetting::SETTING_NAME_*
      * @param string|array $value The value of the setting.
      */
     public function setHostedPaymentSetting($name, $value)
@@ -227,6 +227,30 @@ class AuthorizeRequest extends ApiAuthorizeRequest
         return $this->setHostedPaymentSettingParameter(
             HostedPaymentSetting::SETTING_NAME_PAYMENT_OPTIONS,
             'cardCodeRequired',
+            (bool)$value
+        );
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setPaymentOptionsShowCreditCard($value)
+    {
+        return $this->setHostedPaymentSettingParameter(
+            HostedPaymentSetting::SETTING_NAME_PAYMENT_OPTIONS,
+            'showCreditCard',
+            (bool)$value
+        );
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setPaymentOptionsShowBankAccount($value)
+    {
+        return $this->setHostedPaymentSettingParameter(
+            HostedPaymentSetting::SETTING_NAME_PAYMENT_OPTIONS,
+            'showBankAccount',
             (bool)$value
         );
     }

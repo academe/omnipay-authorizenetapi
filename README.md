@@ -166,10 +166,41 @@ echo "</form>";
 This will take the user to the gateway payment page, looking something
 like this by default:
 
+------
 ![Default Gateway Payment Page](docs/authorizenet-default-payment-form.png)
+------
 
-The billing details wil be prefilled with the card details supplied
+The billing details will be prefilled with the card details supplied
 in the `$gateway->authorize()`.
 What the user can change and/or see, can be changed using options or
 confiration in the account.
 
+Taking the `hostedPaymentPaymentOptions` as an example,
+this is how the options are set:
+
+The [documentation](https://developer.authorize.net/api/reference/features/accept_hosted.html)
+lists `hostedPaymentPaymentOptions` as supporting these options:
+`{"cardCodeRequired": false, "showCreditCard": true, "showBankAccount": true}`
+
+To set any of the options, drop the `hostedPayment` prefix from the options
+name, then add the specific option you want to set, and use the
+result as the parameter.
+So the above set of options are supported by the following parameters:
+
+* paymentOptionsCardCodeRequired
+* paymentOptionsShowCreditCard
+* paymentOptionsShowBankAccount
+
+Set these in tha `authorize()` stage:
+
+```php
+$gateway->authorize([
+    ...
+    // Hide the bank account form but show the credit card form.
+    'paymentOptionsShowCreditCard' => true,
+    'paymentOptionsShowBankAccount' => false,
+    // Change the "Pay" buton text.
+    'buttonOptionsText' => 'Pay now',
+]);
+
+or use the `set*()` form to do the same thing.
