@@ -10,6 +10,7 @@ Table of Contents
 
    * [Table of Contents](#table-of-contents)
    * [Omnipay-AuthorizeNetApi](#omnipay-authorizenetapi)
+   * [Installation](#installation)
    * [Authorize.Net API](#authorizenet-api)
       * [API Authorize/Purchase (Credit Card)](#api-authorizepurchase-credit-card)
       * [API Capture](#api-capture)
@@ -23,6 +24,10 @@ Table of Contents
 # Omnipay-AuthorizeNetApi
 
 Omnipay 3.x implementation of Authorize.Net API
+
+# Installation
+
+    composer require "academe/omnipay-authorizenetapi: ~3.0"
 
 # Authorize.Net API
 
@@ -217,11 +222,17 @@ the previous section. In the `creditCard` object, leave the card details
 blank, not set. Instead, send the opaque data:
 
 ```php
-$gateway->authorize([
+$request = $gateway->authorize([
     ...
     'opaqueDataDescriptor' => $opaqueDataDescriptor,
     'opaqueDataValue' => $opaqueDataValue,
 ]);
+```
+
+or
+
+```php
+$request->setOpaqueData($opaqueDataDescriptor, $opaqueDataValue);
 ```
 
 The authorizatiob or purchase should then go ahead as though the card
