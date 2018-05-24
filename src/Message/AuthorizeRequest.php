@@ -17,6 +17,7 @@ use Academe\AuthorizeNet\Request\Model\Order;
 use Academe\AuthorizeNet\AmountInterface;
 use Academe\AuthorizeNet\Payment\Track1;
 use Academe\AuthorizeNet\Payment\Track2;
+use Academe\AuthorizeNet\Payment\OpaqueData;
 use Academe\AuthorizeNet\Request\Collections\LineItems;
 use Academe\AuthorizeNet\Request\Model\LineItem;
 use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
@@ -115,7 +116,16 @@ class AuthorizeRequest extends AbstractRequest
             }
         } // credit card
 
-        // TODO: allow "Accept JS" nonce (in two parts) instead of card (aka OpaqueData).
+        // Allow "Accept JS" nonce (in two parts) instead of card (aka OpaqueData).
+
+        $descriptor = $this->getOpaqueDataDescriptor();
+        $value = $this->getOpaqueDataValue();
+
+        if ($descriptor && $value) {
+            $transaction = $transaction->withPayment(
+                new OpaqueData($descriptor, $value)
+            );
+        }
 
         if ($this->getClientIp()) {
             $transaction = $transaction->withCustomerIp($this->getClientIp());
@@ -256,5 +266,51 @@ class AuthorizeRequest extends AbstractRequest
     public function getMarketType()
     {
         return $this->getParameter('marketType');
+    }
+
+    /**
+     * @param string $value Example: 'COMMON.ACCEPT.INAPP.PAYMENT'.
+     * @return $this
+     */
+    public function setOpaqueDataDescriptor($value)
+    {
+        return $this->setParameter('opaqueDataDescriptor', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOpaqueDataDescriptor()
+    {
+        return $this->getParameter('opaqueDataDescriptor');
+    }
+
+    /**
+     * @param string $value Long text token usually 216 bytes long.
+     * @return $this
+     */
+    public function setOpaqueDataValue($value)
+    {
+        return $this->setParameter('opaqueDataValue', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOpaqueDataValue()
+    {
+        return $this->getParameter('opaqueDataValue');
+    }
+
+    /**
+     * @param string $descriptor
+     * @param string $value
+     * @return $this
+     */
+    public function setOpaqueData($descriptor, $value)
+    {
+        $this->setOpaqueDataValue($value);
+        $this->setOpaqueDataDataDescriptor($descriptor);
+        return $this;
     }
 }

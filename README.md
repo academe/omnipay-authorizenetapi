@@ -5,17 +5,36 @@
 [![Latest Unstable Version](https://poser.pugx.org/academe/omnipay-authorizenetapi/v/unstable)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
 [![License](https://poser.pugx.org/academe/omnipay-authorizenetapi/license)](https://packagist.org/packages/academe/omnipay-authorizenetapi)
 
+Table of Contents
+=================
+
+   * [Omnipay-AuthorizeNetApi](#omnipay-authorizenetapi)
+   * [Authorize.Net API](#authorizenet-api)
+      * [API Authorize/Purchase (Credit Card)](#api-authorizepurchase-credit-car                           d)
+      * [API Capture](#api-capture)
+      * [API Authorize/Purchase (Opaque Data)](#api-authorizepurchase-opaque-dat                           a)
+      * [API Void](#api-void)
+      * [API Refund](#api-refund)
+      * [API Fetch Transaction](#api-fetch-transaction)
+   * [Hosted Payment Page](#hosted-payment-page)
+      * [Hosted Payment Page Authorize/Purchase](#hosted-payment-page-authorizep                           urchase)
+
 # Omnipay-AuthorizeNetApi
 
 Omnipay 3.x implementation of Authorize.Net API
 
-# Development Example
+# Authorize.Net API
 
-This is under development, but is usable within limitations.
+The *Authorize.Net API* driver handles server-to-server requests.
+It is used both for direct card payment (though check PCI requirements)
+and for creating transactions using a card token.
 
-The following example is a simple authorize with known card details.
-You would normally avoid this particular method for PCI compliance reasons,
-supplying a tokenised card reference instead.
+## API Authorize/Purchase (Credit Card)
+
+The following example is a simple authorize with supplied card details.
+You would normally avoid allowing card details near your merchanet site
+back end for PCI compliance reasons,
+supplying a tokenised card reference instead (see later section for this).
 
 ```php
 <?php
@@ -62,7 +81,9 @@ var_dump($response->getTransactionReference());
 // string(11) "60103474871"
 ```
 
-If authorized, the amount can be captured:
+## API Capture
+
+Once authorized, the amount can be captured:
 
 ```php
 // Captured from the authorization response.
@@ -75,6 +96,142 @@ $response = $gateway->capture([
 ])->send();
 ```
 
+## API Authorize/Purchase (Opaque Data)
+
+The "Opaque Data" here is a tokenised credit or debit card.
+Authorize.Net can tokenise cards in a number of ways, once of which
+is through the `accept.js` package on the front end. It works like this:
+
+You build a payment form in your page.
+As well as hard-coding it as shown below, the gateway provides a method
+to generate it dynamically too.
+
+```html
+<form id="paymentForm"
+    method="POST"
+    action="https://example.com/authorize">
+    <input type="text" name="cardNumber" id="cardNumber" placeholder="cardNumber"/>
+    <input type="text" name="expMonth" id="expMonth" placeholder="expMonth"/>
+    <input type="text" name="expYear" id="expYear" placeholder="expYear"/>
+    <input type="text" name="cardCode" id="cardCode" placeholder="cardCode"/>
+    <input type="hidden" name="dataValue" id="dataValue" />
+    <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+    <button>Pay Now</button>
+</form>
+```
+
+Note the card detail elements do not have names, so will not be submitted
+to your site.
+Two hidden fields are defined to carry the opaquer data to your site.
+You can include any many other fields as you like in the same form,
+which may include names and an address.
+
+After the payment form, you will need the `accept.js` JavaScript:
+
+```javascript
+    <script type="text/javascript"
+        src="https://jstest.authorize.net/v1/Accept.js"
+        charset="utf-8">\
+    </script>
+```
+
+Or use `https://js.authorize.net/v1/Accept.js` for production.
+
+You need to catch the "Pay Now" submission and send it to a function to
+process the card details. Either an `onclick` attribute or a jQuery event
+will work. For example:
+
+    <button type="button" onclick="sendPaymentDataToAnet()">Pay</button>
+
+The `sendPaymentDataToAnet` function handles the tokenisation.
+
+```
+<script type="text/javascript">
+function sendPaymentDataToAnet() {
+    // Set up authorisation to access the gateway.
+    var authData = {};
+        authData.clientKey = "YOUR PUBLIC CLIENT KEY";
+        authData.apiLoginID = "YOUR API LOGIN ID";
+
+    // Capture the card details from the payment form.
+    // The cardCode is the CVV.
+    // You can include fullName and zip fields too, for added security.
+    // You can pick up bank account fields in a similar way, if using
+    // that payment method.
+    var cardData = {};
+        cardData.cardNumber = document.getElementById("cardNumber").value;
+        cardData.month = document.getElementById("expMonth").value;
+        cardData.year = document.getElementById("expYear").value;
+        cardData.cardCode = document.getElementById("cardCode").value;
+
+    // Now send the card data to the gateway for tokenisation.
+    // The responseHandler function will handle the response.
+    var secureData = {};
+        secureData.authData = authData;
+        secureData.cardData = cardData;
+        Accept.dispatchData(secureData, responseHandler);
+}
+</script>
+```
+
+The response handler is able to provide errors that may have been
+generated while trying to tokenise the card.
+But if all is well, it updates the payment form with the opaque data
+(another function `paymentFormUpdate`):
+
+```javascript
+function responseHandler(response) {
+    if (response.messages.resultCode === "Error") {
+        var i = 0;
+        while (i < response.messages.message.length) {
+            console.log(
+                response.messages.message[i].code + ": " +
+                response.messages.message[i].text
+            );
+            i = i + 1;
+        }
+    } else {
+        paymentFormUpdate(response.opaqueData);
+    }
+}
+```
+
+Populate the opaque data hidden form items, then submit the form again:
+
+```javascript
+function paymentFormUpdate(opaqueData) {
+    document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
+    document.getElementById("dataValue").value = opaqueData.dataValue;
+    document.getElementById("paymentForm").submit();
+}
+```
+
+Back at the server, you will have two opaque data fields to capture:
+
+* dataDescriptor
+* dataValue
+
+Initiate an `authorize()` or `purchase()` at the backend, as described in
+the previous section. In the `creditCard` object, leave the card details
+blank, not set. Instead, send the opaque data:
+
+```php
+$gateway->authorize([
+    ...
+    'opaqueDataDescriptor' => $opaqueDataDescriptor,
+    'opaqueDataValue' => $opaqueDataValue,
+]);
+```
+
+The authorizatiob or purchase should then go ahead as though the card
+details were provided directly. In the result, the last four digits
+of the card will be made available in case a refund needs to be performed.
+
+Further details can be 
+[fouund in the officual documentation](https://developer.authorize.net/api/reference/features/acceptjs.html).
+
+## API Void
+
 An authorized transaction can be voided:
 
 ```php
@@ -85,6 +242,8 @@ $response = $gateway->void([
     'transactionReference' => $transactionReference,
 ])->send();
 ```
+
+## API Refund
 
 A cleared credit card payment can be refunded, given the original
 transaction reference, the original amount, and the last four digits
@@ -99,6 +258,8 @@ $response = $gateway->refund([
 ])->send();
 ```
 
+## API Fetch Transaction
+
 An existing transaction can be fetched from the gateway given
 its `transactionReference`:
 
@@ -111,14 +272,20 @@ $response = $gateway->fetchTransaction([
 The Hosted Payment Page will host the payment form on the gateway.
 The form can be presented to the user as a full page redirect or in an iframe.
 
+# Hosted Payment Page
+
 The Hosted Payment Page is a different gateway:
 
 ```php
 $gateway = Omnipay\Omnipay::create('AuthorizeNetApi_HostedPage');
 ```
 
-The gateway is configured the same way, and the authorize/purchase
-requests are created in the same way, except for the return and cancel URLs:
+The gateway is configured the same way as the direct API gateway,
+and the authorize/purchase
+requests are created in the same way, except for the addition of
+`return` and `cancel` URLs:
+
+## Hosted Payment Page Authorize/Purchase
 
 ```php
 $request = $gateway->authorize([
@@ -194,7 +361,7 @@ So the above set of options are supported by the following parameters:
 You can set these in the `authorize()` stage:
 
 ```php
-$gateway->authorize([
+$request = $gateway->authorize([
     ...
     // Hide the bank account form but show the credit card form.
     'paymentOptionsShowCreditCard' => true,
@@ -204,4 +371,7 @@ $gateway->authorize([
 ]);
 ```
 
-or use the `set*()` form to do the same thing.
+or use the `set*()` form to do the same thing:
+
+    $request->setPaymentOptionsShowBankAccount(false);
+
