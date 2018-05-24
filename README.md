@@ -8,16 +8,17 @@
 Table of Contents
 =================
 
+   * [Table of Contents](#table-of-contents)
    * [Omnipay-AuthorizeNetApi](#omnipay-authorizenetapi)
    * [Authorize.Net API](#authorizenet-api)
-      * [API Authorize/Purchase (Credit Card)](#api-authorizepurchase-credit-car                           d)
+      * [API Authorize/Purchase (Credit Card)](#api-authorizepurchase-credit-card)
       * [API Capture](#api-capture)
-      * [API Authorize/Purchase (Opaque Data)](#api-authorizepurchase-opaque-dat                           a)
+      * [API Authorize/Purchase (Opaque Data)](#api-authorizepurchase-opaque-data)
       * [API Void](#api-void)
       * [API Refund](#api-refund)
       * [API Fetch Transaction](#api-fetch-transaction)
    * [Hosted Payment Page](#hosted-payment-page)
-      * [Hosted Payment Page Authorize/Purchase](#hosted-payment-page-authorizep                           urchase)
+      * [Hosted Payment Page Authorize/Purchase](#hosted-payment-page-authorizepurchase)
 
 # Omnipay-AuthorizeNetApi
 
