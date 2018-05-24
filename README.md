@@ -109,7 +109,7 @@ $response = $gateway->fetchTransaction([
 ```
 
 The Hosted Payment Page will host the payment form on the gateway.
-The form can be presented to the user as a full page or in an iframe.
+The form can be presented to the user as a full page redirect or in an iframe.
 
 The Hosted Payment Page is a different gateway:
 
@@ -145,4 +145,31 @@ $response->getRedirectData()
 // Array of name/value elements used to construct hidden fields
 // in the POST form.
 ```
+
+A naive POST "pay now" button may look like the following form.
+
+```php
+$method = $response->getRedirectMethod();
+$action = $response->getRedirectUrl();
+
+echo "<form method='$method' action='$action'>";
+foreach ($response->getRedirectData() as $name => $value) {
+    $dataName = htmlspecialchars($name);
+    $dataValue = htmlspecialchars($value);
+
+    echo "<input type='hidden' name='$dataName' value='$dataValue' />";
+}
+echo "<button type='submit'>Pay Now</button>";
+echo "</form>";
+```
+
+This will take the user to the gateway payment page, looking something
+like this by default:
+
+![Default Gateway Payment Page](docs/authorizenet-default-payment-form.png)
+
+The billing details wil be prefilled with the card details supplied
+in the `$gateway->authorize()`.
+What the user can change and/or see, can be changed using options or
+confiration in the account.
 
