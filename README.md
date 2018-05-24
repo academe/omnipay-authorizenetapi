@@ -183,15 +183,15 @@ lists `hostedPaymentPaymentOptions` as supporting these options:
 `{"cardCodeRequired": false, "showCreditCard": true, "showBankAccount": true}`
 
 To set any of the options, drop the `hostedPayment` prefix from the options
-name, then add the specific option you want to set, and use the
-result as the parameter.
+name, then append with the specific option you want to set, and use the
+result as the parameter, keeping the name in *camelCase*.
 So the above set of options are supported by the following parameters:
 
 * paymentOptionsCardCodeRequired
 * paymentOptionsShowCreditCard
 * paymentOptionsShowBankAccount
 
-Set these in tha `authorize()` stage:
+You can set these in the `authorize()` stage:
 
 ```php
 $gateway->authorize([
@@ -202,5 +202,6 @@ $gateway->authorize([
     // Change the "Pay" buton text.
     'buttonOptionsText' => 'Pay now',
 ]);
+```
 
 or use the `set*()` form to do the same thing.
