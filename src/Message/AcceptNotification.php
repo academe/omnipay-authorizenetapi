@@ -7,26 +7,40 @@ namespace Omnipay\AuthorizeNetApi\Message;
  */
 
 use Omnipay\Common\Message\NotificationInterface;
-use Omnipay\Common\Http\Client;
-use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
+use Omnipay\Common\Http\ClientInterface;
 use Omnipay\Common\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
+use Omnipay\AuthorizeNetApi\Traits\HasGatewayParams;
 use Academe\AuthorizeNet\ServerRequest\Notification;
 
-class AcceptNotification implements NotificationInterface, RequestInterface
+class AcceptNotification extends AbstractRequest implements NotificationInterface //, RequestInterface
 {
+    use HasGatewayParams;
+
+    protected $data;
+
     /**
      * The reponse data parsed into nested value objects.
      */
     protected $parsedData;
 
-    public function __construct(Client $client, $data)
+    protected $notification;
+
+    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
     {
-        // Parse the raw data into a response message value object.
-        //$this->setParsedData(new Notification($data));
-        var_dump($client);
-        echo "<hr />";
-        var_dump($data);
+        // The request is a \Symfony/Component/HttpFoundation/Request object
+        // and not (yet) a PSR-7 message.
+
+        if ($httpRequest->getContentType() === 'json') {
+            $body = (string)$httpRequest->getContent();
+        } else {
+            $body = '{}';
+        }
+
+        $this->data = json_decode($body, true);
+
+        $this->parsedData = new Notification($this->data);
     }
 
     /**
@@ -45,10 +59,6 @@ class AcceptNotification implements NotificationInterface, RequestInterface
         return $this->parsedData;
     }
 
-    // Interface methods.
-
-    // Interface NotificationInterface
-
     /**
      * Get the raw data array for this message.
      * The raw data will be passed in the body as JSON.
@@ -57,6 +67,7 @@ class AcceptNotification implements NotificationInterface, RequestInterface
      */
     public function getData()
     {
+        return $this->data;
     }
 
     /**
@@ -66,6 +77,7 @@ class AcceptNotification implements NotificationInterface, RequestInterface
      */
     public function getTransactionReference()
     {
+        // TODO.
     }
 
     /**
@@ -76,6 +88,7 @@ class AcceptNotification implements NotificationInterface, RequestInterface
      */
     public function getTransactionStatus()
     {
+        // TODO.
     }
 
     /**
@@ -85,43 +98,7 @@ class AcceptNotification implements NotificationInterface, RequestInterface
      */
     public function getMessage()
     {
-    }
-
-    // Interface RequestInterface
-
-    /**
-     * Initialize request with parameters
-     * @param array $parameters The parameters to send
-     */
-    public function initialize(array $parameters = [])
-    {
-    }
-
-    /**
-     * Get all request parameters
-     *
-     * @return array
-     */
-    public function getParameters()
-    {
-    }
-
-    /**
-     * Get the response to this request (if the request has been sent)
-     *
-     * @return ResponseInterface
-     */
-    public function getResponse()
-    {
-    }
-
-    /**
-     * Send the request
-     *
-     * @return ResponseInterface
-     */
-    public function send()
-    {
+        // TODO.
     }
 
     /**

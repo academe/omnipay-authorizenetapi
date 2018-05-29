@@ -13,6 +13,7 @@ use Omnipay\AuthorizeNetApi\Message\PurchaseRequest;
 use Omnipay\AuthorizeNetApi\Message\VoidRequest;
 use Omnipay\AuthorizeNetApi\Message\RefundRequest;
 use Omnipay\AuthorizeNetApi\Message\FetchTransactionRequest;
+use Omnipay\AuthorizeNetApi\Message\AcceptNotification;
 
 class ApiGateway extends AbstractGateway
 {
@@ -75,6 +76,17 @@ class ApiGateway extends AbstractGateway
     {
         return $this->createRequest(
             FetchTransactionRequest::class,
+            $parameters
+        );
+    }
+
+    /**
+     * Accept a notification.
+     */
+    public function acceptNotification(array $parameters = [])
+    {
+        return $this->createRequest(
+            AcceptNotification::class,
             $parameters
         );
     }
