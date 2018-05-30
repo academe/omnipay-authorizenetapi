@@ -30,6 +30,12 @@ use Money\Currency;
 class AuthorizeRequest extends AbstractRequest
 {
     /**
+     * @var string The separator used to join the opaque data
+     * descriptor and value, when used as a card token.
+     */
+    const CARD_TOKEN_SEPARATOR = ':';
+
+    /**
      * Return the complete transaction object which will later be wrapped in
      * a \Academe\AuthorizeNet\Request\CreateTransaction object.
      *
@@ -309,8 +315,34 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function setOpaqueData($descriptor, $value)
     {
-        $this->setOpaqueDataValue($value);
         $this->setOpaqueDataDataDescriptor($descriptor);
+        $this->setOpaqueDataValue($value);
+
         return $this;
+    }
+
+    /**
+     * The opaque data comes in two parts, but Omnipay uses just
+     * one parameter for a card token.
+     * Join the descriptor and the value with a colon.
+     */
+    public function setToken($value)
+    {
+        list($opaqueDataDescriptor, $opaqueDataValue) = explode(static::CARD_TOKEN_SEPARATOR, $value, 2);
+
+        $this->setOpaqueDataDescriptor($opaqueDataDescriptor);
+        $this->setOpaqueDataValue($opaqueDataValue);
+
+        return $this;
+    }
+
+    public function getToken()
+    {
+        $opaqueDataDescriptor = $this->getOpaqueDataDescriptor();
+        $opaqueDataValue = $this->getOpaqueDataValue();
+
+        if ($opaqueDataDescriptor && $opaqueDataValue) {
+            return $opaqueDataDescriptor . static::CARD_TOKEN_SEPARATOR . $opaqueDataValue;
+        }
     }
 }

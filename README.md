@@ -39,7 +39,7 @@ and for creating transactions using a card token.
 ## API Authorize/Purchase (Credit Card)
 
 The following example is a simple authorize with supplied card details.
-You would normally avoid allowing card details near your merchanet site
+You would normally avoid allowing card details near your merchant site
 back end for PCI compliance reasons,
 supplying a tokenised card reference instead (see later section for this).
 
@@ -236,12 +236,21 @@ or
 $request->setOpaqueData($opaqueDataDescriptor, $opaqueDataValue);
 ```
 
-The authorizatiob or purchase should then go ahead as though the card
+or join with a colon (:) to handle as a card token:
+
+```php
+$request->setToken($opaqueDataDescriptor . ':' . $opaqueDataValue);
+```
+
+The authorize or purchase should then go ahead as though the card
 details were provided directly. In the result, the last four digits
 of the card will be made available in case a refund needs to be performed.
 
 Further details can be 
 [fouund in the officual documentation](https://developer.authorize.net/api/reference/features/acceptjs.html).
+
+Note also that the opaque data is used for other payment sources, such as
+bank accounts and PayPal.
 
 ## API Void
 
