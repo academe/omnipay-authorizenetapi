@@ -20,6 +20,7 @@ Table of Contents
       * [API Fetch Transaction](#api-fetch-transaction)
    * [Hosted Payment Page](#hosted-payment-page)
       * [Hosted Payment Page Authorize/Purchase](#hosted-payment-page-authorizepurchase)
+   * [Webhook Notifications](#webhook-notifications)
 
 # Omnipay-AuthorizeNetApi
 
@@ -386,4 +387,80 @@ $request = $gateway->authorize([
 or use the `set*()` form to do the same thing:
 
     $request->setPaymentOptionsShowBankAccount(false);
+
+# Webhook Notifications
+
+The Authorize.Net gateway provides a rich set of webhooks to notify the
+merchant site (and/or other backend systems) about events related to
+customers or payments.
+The [current documentation can be found here](https://developer.authorize.net/api/reference/features/webhooks.html).
+
+For some API methods, such as the Hosted Payment Page, the webhooks
+are necessary for operation. For other API methods they provide additional
+information.
+
+The webhooks can be configured in the Authorize.Net account settings page.
+They can also be fully managed through a REST API, so that a merchant
+site can register for all the webhooks that it needs.
+*Note that the webhook management RESTful API has not yet been implemented here.*
+
+Your notification handler is set up like this at your webhook endpoint:
+
+```php
+$gateway = Omnipay::create('AuthorizeNetApi_Api');
+
+$gateway->setAuthName($authName);
+$gateway->setTransactionKey($authKey);
+$gateway->setTestMode(true); // for false
+
+$notification = $gateway->acceptNotification();
+```
+
+This will read and parse the webhook `POST` data.
+The raw nested array data can be found at:
+
+    $notification->getData();
+
+The parsed `Notification` value object can be found at:
+
+    $notification->getParsedData();
+
+Some details that describe the nature of the notification are:
+
+```php
+// The main target: payment or customer
+$notification->getEventTarget();
+
+// The event subtarget. e.g. capture, fraud, void, subscription
+$notification->getEventSubtarget();
+
+// The event action. e.g. created, updated, deleted, held, approved, declined
+$notification->getEventMethod();
+```
+
+See here for a full list of the target, subtarget and actions:
+https://github.com/academe/authorizenet-objects/blob/master/src/ServerRequest/Notification.php#L24
+
+For those notifications that contain the `transactionReference`, this can be
+obtained:
+
+    $notification->getTransactionReference();
+
+For any notifications that do not involve a transaction, this will be `null`.
+Note that the webhook does not include the merchant `transactionId`,
+so there is nothing to tie the payment webhook back to a Hosted Page request.
+In this case, you can supply the `transactionId` as a query parameter
+on the `notifyUrl` when creating the Hosted Payment Page data.
+However, do be aware this ID will be visible to end users monitoring
+browser traffic, and the ID (being in the URL) will not be included
+in the notification signing, so could be faked. It is unlikely, but just
+be aware that it is a potential attack vector, so maybe self-sign the URL
+too.
+
+For consistency with other Omipay Driers, this driver *may* make an
+opinionated decision on how the `transactionId` is passed into the
+notification handler, but only after researchign how other people are
+handling it.
+There is a front-end way to do it through an iframe, but it seems
+vulnerable to user manipulation to me.
 
