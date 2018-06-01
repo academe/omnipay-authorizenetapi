@@ -117,12 +117,12 @@ to generate it dynamically too.
 <form id="paymentForm"
     method="POST"
     action="https://example.com/authorize">
-    <input type="text" name="cardNumber" id="cardNumber" placeholder="cardNumber"/>
-    <input type="text" name="expMonth" id="expMonth" placeholder="expMonth"/>
-    <input type="text" name="expYear" id="expYear" placeholder="expYear"/>
-    <input type="text" name="cardCode" id="cardCode" placeholder="cardCode"/>
-    <input type="hidden" name="dataValue" id="dataValue" />
-    <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+    <input type="text" id="cardNumber" placeholder="cardNumber"/>
+    <input type="text" id="expMonth" placeholder="expMonth"/>
+    <input type="text" id="expYear" placeholder="expYear"/>
+    <input type="text" id="cardCode" placeholder="cardCode"/>
+    <input type="hidden" name="opaqueDataValue" id="opaqueDataValue" />
+    <input type="hidden" name="opaqueDataDescriptor" id="opaqueDataDescriptor" />
     <button>Pay Now</button>
 </form>
 ```
@@ -152,7 +152,7 @@ will work. For example:
 
 The `sendPaymentDataToAnet` function handles the tokenisation.
 
-```
+```javascript
 <script type="text/javascript">
 function sendPaymentDataToAnet() {
     // Set up authorisation to access the gateway.
@@ -207,16 +207,16 @@ Populate the opaque data hidden form items, then submit the form again:
 
 ```javascript
 function paymentFormUpdate(opaqueData) {
-    document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
-    document.getElementById("dataValue").value = opaqueData.dataValue;
+    document.getElementById("opaqueDataDescriptor").value = opaqueData.dataDescriptor;
+    document.getElementById("opaqueDataValue").value = opaqueData.dataValue;
     document.getElementById("paymentForm").submit();
 }
 ```
 
 Back at the server, you will have two opaque data fields to capture:
 
-* dataDescriptor
-* dataValue
+* opaqueDataDescriptor
+* opaqueDataValue
 
 Initiate an `authorize()` or `purchase()` at the backend, as described in
 the previous section. In the `creditCard` object, leave the card details
