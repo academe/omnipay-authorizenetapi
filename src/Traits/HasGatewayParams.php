@@ -2,6 +2,8 @@
 
 namespace Omnipay\AuthorizeNetApi\Traits;
 
+use Omnipay\Common\Exception\InvalidRequestException;
+
 /**
  * Gateway setters and getters shared across all gateway types.
  */
