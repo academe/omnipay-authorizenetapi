@@ -74,7 +74,11 @@ $response = $gateway->authorize([
     // Additional optional attributes:
     'customerId' => '123456',
     'customerType' => \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL,
-    ~~'customerDriversLicense' => [TBC],~~
+    'customerDriversLicense' => [
+        'number' => '123456',
+        'state' => 'NY',
+        'dateOfBirth' => '1967-01-01',
+    ],
     'customerTaxId' => 'TAX456',
 ])->send();
 
