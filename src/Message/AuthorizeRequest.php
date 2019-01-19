@@ -122,9 +122,7 @@ class AuthorizeRequest extends AbstractRequest
 
                 $creditCard = new CreditCard(
                     $card->getNumber(),
-
                     // Either MMYY or MMYYYY will work.
-
                     $card->getExpiryMonth() . $card->getExpiryYear()
                 );
 
