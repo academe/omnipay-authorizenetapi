@@ -3,7 +3,8 @@
 namespace Omnipay\AuthorizeNetApi\Message;
 
 /**
- * TODO: validate the server request signature.
+ * TODO: validate the server request signature, which will be in
+ * the X-Anet-Signature header.
  */
 
 use Omnipay\Common\Message\NotificationInterface;
@@ -15,7 +16,7 @@ use Omnipay\AuthorizeNetApi\Traits\HasGatewayParams;
 use Academe\AuthorizeNet\ServerRequest\Notification;
 use Academe\AuthorizeNet\Response\Model\TransactionResponse;
 
-class AcceptNotification extends AbstractRequest implements NotificationInterface //, RequestInterface
+class AcceptNotification extends AbstractRequest implements NotificationInterface
 {
     use HasGatewayParams;
 
@@ -28,7 +29,7 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
 
     public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
     {
-        // The request is a \Symfony/Component/HttpFoundation/Request object
+        // The request is a \Symfony\Component\HttpFoundation\Request object
         // and not (yet) a PSR-7 message.
 
         if ($httpRequest->getContentType() === 'json') {

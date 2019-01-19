@@ -47,6 +47,17 @@ class AuthorizeRequest extends AbstractRequest
 
         $transaction = $this->createTransaction($amount);
 
+        // Build the customer, and add the customer to the transaction
+        // if it has any attributes set.
+
+        $customer = new Customer();
+
+        $customer = $customer
+            ->withId($this->getCustomerId())
+            ->withCustomerType($this->getCustomerType())
+            ->withDriversLicense($this->getCustomerDriversLicense())
+            ->withTaxId($this->getCustomerTaxId());
+
         if ($card = $this->getCard()) {
             $billTo = new NameAddress(
                 $card->getBillingFirstName(),
@@ -83,13 +94,7 @@ class AuthorizeRequest extends AbstractRequest
             }
 
             if ($card->getEmail()) {
-                // TODO: customer type may be Customer::CUSTOMER_TYPE_INDIVIDUAL or
-                // Customer::CUSTOMER_TYPE_BUSINESS and it would be nice to be able
-                // to set it.
-
-                $customer = new Customer();
                 $customer = $customer->withEmail($card->getEmail());
-                $transaction = $transaction->withCustomer($customer);
             }
 
             // Credit card, track 1 and track 2 are mutually exclusive.
@@ -121,6 +126,10 @@ class AuthorizeRequest extends AbstractRequest
                 );
             }
         } // credit card
+
+        if ($customer->hasAny()) {
+            $transaction = $transaction->withCustomer($customer);
+        }
 
         // Allow "Accept JS" nonce (in two parts) instead of card (aka OpaqueData).
 

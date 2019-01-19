@@ -3,6 +3,7 @@
 namespace Omnipay\AuthorizeNetApi;
 
 use Omnipay\Tests\TestCase;
+use Omnipay\Common\CreditCard;
 
 class AuthorizeRequestTest extends TestCase
 {
@@ -49,5 +50,32 @@ class AuthorizeRequestTest extends TestCase
 
         $this->assertSame($opaqueDescriptor, $request->getOpaqueDataDescriptor());
         $this->assertSame($opaqueValue, $request->getOpaqueDataValue());
+    }
+
+    public function testCustomerData()
+    {
+        $request = $this->gateway->authorize([
+            'amount' => 1.23,
+            'customerId' => 'customerId',
+            'customerType' => 'individual',
+            'customerTaxId' => 'customerTaxId',
+            'customerDriversLicense' => 'customerDriversLicense',
+            'card' => new CreditCard([
+                'email' => 'email@example.com',
+            ]),
+        ]);
+
+        // The request data will have a customer object with this data in.
+
+        $this->assertArraySubset(
+            [
+                'id' => 'customerId',
+                'type' => 'individual',
+                'email' => 'email@example.com',
+                'driversLicense' => 'customerDriversLicense',
+                'taxId' => 'customerTaxId',
+            ],
+            $request->getData()->getCustomer()->jsonSerialize()
+        );
     }
 }

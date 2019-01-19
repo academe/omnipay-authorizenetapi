@@ -201,4 +201,74 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         return $this->getParameter('authenticationValue');
     }
+
+    /**
+     * @param string customer ID.
+     * @return $this
+     */
+    public function setCustomerId($value)
+    {
+        return $this->setParameter('customerId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerId()
+    {
+        return $this->getParameter('customerId');
+    }
+
+    /**
+     * Valid values are one of
+     * \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_*
+     * @param string customer type
+     * @return $this
+     */
+    public function setCustomerType($value)
+    {
+        return $this->setParameter('customerType', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerType()
+    {
+        return $this->getParameter('customerType');
+    }
+
+    /**
+     * @param string Customer Drivers License.
+     * @return $this
+     */
+    public function setCustomerDriversLicense($value)
+    {
+        return $this->setParameter('customerDriversLicense', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerDriversLicense()
+    {
+        return $this->getParameter('customerDriversLicense');
+    }
+
+    /**
+     * @param string Customer Tax ID.
+     * @return $this
+     */
+    public function setCustomerTaxId($value)
+    {
+        return $this->setParameter('customerTaxId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerTaxId()
+    {
+        return $this->getParameter('customerTaxId');
+    }
 }

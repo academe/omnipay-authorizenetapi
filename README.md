@@ -71,6 +71,11 @@ $response = $gateway->authorize([
     'currency' => 'USD',
     'transactionId' => $transactionId,
     'card' => $creditCard,
+    // Additional optional attributes:
+    'customerId' => '123456',
+    'customerType' => \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL,
+    'customerDriversLicense' => 'LIC123',
+    'customerTaxId' => 'TAX456',
 ])->send();
 
 // Or use $gateway->purchase() to immediately capture.
