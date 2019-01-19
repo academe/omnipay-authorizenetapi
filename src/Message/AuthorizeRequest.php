@@ -59,11 +59,19 @@ class AuthorizeRequest extends AbstractRequest
             ->withTaxId($this->getCustomerTaxId());
 
         if ($card = $this->getCard()) {
+            $billingAddress = trim(
+                $card->getBillingAddress1() . ' ' . $card->getBillingAddress2()
+            );
+
+            if ($billingAddress === '') {
+                $billingAddress = null;
+            }
+
             $billTo = new NameAddress(
                 $card->getBillingFirstName(),
                 $card->getBillingLastName(),
                 $card->getBillingCompany(),
-                trim($card->getBillingAddress1() . ' ' . $card->getBillingAddress2()),
+                $billingAddress,
                 $card->getBillingCity(),
                 $card->getBillingState(),
                 $card->getBillingPostcode(),
@@ -78,11 +86,19 @@ class AuthorizeRequest extends AbstractRequest
                 $transaction = $transaction->withBillTo($billTo);
             }
 
+            $shippingAddress = trim(
+                $card->getShippingAddress1() . ' ' . $card->getShippingAddress2()
+            );
+
+            if ($shippingAddress === '') {
+                $shippingAddress = null;
+            }
+
             $shipTo = new NameAddress(
                 $card->getShippingFirstName(),
                 $card->getShippingLastName(),
                 $card->getShippingCompany(),
-                trim($card->getShippingAddress1() . ' ' . $card->getShippingAddress2()),
+                $shippingAddress,
                 $card->getShippingCity(),
                 $card->getShippingState(),
                 $card->getShippingPostcode(),
@@ -99,13 +115,16 @@ class AuthorizeRequest extends AbstractRequest
 
             // Credit card, track 1 and track 2 are mutually exclusive.
 
-            // A credit card has been supplied.
             if ($card->getNumber()) {
+                // A credit card has been supplied.
+
                 $card->validate();
 
                 $creditCard = new CreditCard(
                     $card->getNumber(),
+
                     // Either MMYY or MMYYYY will work.
+
                     $card->getExpiryMonth() . $card->getExpiryYear()
                 );
 
@@ -147,8 +166,13 @@ class AuthorizeRequest extends AbstractRequest
         }
 
         // The MarketType and DeviceType is mandatory if tracks are supplied.
-        if ($this->getDeviceType() || $this->getMarketType() || (isset($card) && $card->getTracks())) {
+
+        if ($this->getDeviceType()
+            || $this->getMarketType()
+            || (isset($card) && $card->getTracks())
+        ) {
             // TODO: accept optional customerSignature
+
             $retail = new Retail(
                 $this->getMarketType() ?: Retail::MARKET_TYPE_RETAIL,
                 $this->getDeviceType() ?: Retail::DEVICE_TYPE_UNKNOWN
@@ -158,6 +182,7 @@ class AuthorizeRequest extends AbstractRequest
         }
 
         // The description and invoice number go into an Order object.
+
         if ($this->getInvoiceNumber() || $this->getDescription()) {
             $order = new Order(
                 $this->getInvoiceNumber(),
@@ -171,6 +196,7 @@ class AuthorizeRequest extends AbstractRequest
         // These two fields submit the authentication values provided.
         // It is not really clear if both these fields must be always provided together,
         // or whether just one is permitted.
+
         if ($this->getAuthenticationIndicator() || $this->getAuthenticationValue()) {
             $cardholderAuthentication = new CardholderAuthentication(
                 $this->getAuthenticationIndicator(),
@@ -181,6 +207,7 @@ class AuthorizeRequest extends AbstractRequest
         }
 
         // Is a basket of items to go into the request?
+
         if ($this->getItems()) {
             $lineItems = new LineItems();
 
@@ -189,17 +216,21 @@ class AuthorizeRequest extends AbstractRequest
 
             foreach ($this->getItems() as $itemId => $item) {
                 // Parse to a Money object.
+
                 $itemMoney = $moneyParser->parse((string)$item->getPrice(), $this->getCurrency());
 
                 // Omnipay provides the line price, but the LineItem wants the unit price.
+
                 $itemQuantity = $item->getQuantity();
 
                 if (! empty($itemQuantity)) {
                     // Divide the line price by the quantity to get the item price.
+
                     $itemMoney = $itemMoney->divide($itemQuantity);
                 }
 
                 // Wrap in a MoneyPhp object for the AmountInterface.
+
                 $amount = new MoneyPhp($itemMoney);
 
                 $lineItem = new LineItem(
@@ -248,7 +279,7 @@ class AuthorizeRequest extends AbstractRequest
     }
 
     /**
-     * TODO: validate values is one of Retail::DEVICE_TYPE_*
+     * Value must be one of Retail::DEVICE_TYPE_*
      * @param int $value The retail device type.
      * @return $this
      */
@@ -266,7 +297,7 @@ class AuthorizeRequest extends AbstractRequest
     }
 
     /**
-     * TODO: validate values is one of Retail::MARKET_TYPE_*
+     * Value must be one of Retail::MARKET_TYPE_*
      * @param int $value The retail market type.
      * @return $this
      */
@@ -351,7 +382,9 @@ class AuthorizeRequest extends AbstractRequest
         $opaqueDataValue = $this->getOpaqueDataValue();
 
         if ($opaqueDataDescriptor && $opaqueDataValue) {
-            return $opaqueDataDescriptor . static::CARD_TOKEN_SEPARATOR . $opaqueDataValue;
+            return $opaqueDataDescriptor
+                . static::CARD_TOKEN_SEPARATOR
+                . $opaqueDataValue;
         }
     }
 }

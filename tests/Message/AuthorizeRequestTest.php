@@ -4,6 +4,7 @@ namespace Omnipay\AuthorizeNetApi;
 
 use Omnipay\Tests\TestCase;
 use Omnipay\Common\CreditCard;
+use Academe\AuthorizeNet\Request\Model\NameAddress;
 
 class AuthorizeRequestTest extends TestCase
 {
@@ -76,6 +77,40 @@ class AuthorizeRequestTest extends TestCase
                 'taxId' => 'customerTaxId',
             ],
             $request->getData()->getCustomer()->jsonSerialize()
+        );
+    }
+
+    /**
+     * If there is no address information, then don't send empty
+     * address objects to the gateway; just suppress them.
+     */
+    public function testAddressSetNotSet()
+    {
+        $request = $this->gateway->authorize([
+            'amount' => 1.23,
+            'card' => new CreditCard([
+            ]),
+        ]);
+
+        $this->assertNull($request->getData()->getBillTo());
+        $this->assertNull($request->getData()->getShipTo());
+
+        $request = $this->gateway->authorize([
+            'amount' => 1.23,
+            'card' => new CreditCard([
+                'billingAddress1' => 'Street Number',
+                'shippingCity' => 'City',
+            ]),
+        ]);
+
+        $this->assertInstanceOf(
+            NameAddress::class,
+            $request->getData()->getBillTo()
+        );
+
+        $this->assertInstanceOf(
+            NameAddress::class,
+            $request->getData()->getShipTo()
         );
     }
 }
