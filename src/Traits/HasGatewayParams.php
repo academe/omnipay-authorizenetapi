@@ -32,7 +32,7 @@ trait HasGatewayParams
      */
     public function setMobileDeviceId($value)
     {
-        if (!is_string($value)) {
+        if ($value !== null && ! is_string($value)) {
             throw new InvalidRequestException('Mobile device ID must be a string.');
         }
 
@@ -49,7 +49,7 @@ trait HasGatewayParams
      */
     public function setRefId($value)
     {
-        if (!is_string($value)) {
+        if ($value !== null && ! is_string($value)) {
             throw new InvalidRequestException('Ref ID must be a string.');
         }
 
@@ -66,7 +66,7 @@ trait HasGatewayParams
      */
     public function setTransactionKey($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new InvalidRequestException('Transaction Key must be a string.');
         }
 
@@ -87,7 +87,7 @@ trait HasGatewayParams
      */
     public function setSignatureKey($value)
     {
-        if (!is_string($value)) {
+        if ($value !== null && ! is_string($value)) {
             throw new InvalidRequestException('Signature Key must be a string.');
         }
 
@@ -97,5 +97,18 @@ trait HasGatewayParams
     public function getSignatureKey()
     {
         return $this->getParameter('signatureKey');
+    }
+
+    /**
+     * @param mixed $value cast to boolean when referenced
+     */
+    public function setDisableWebhookSignature($value)
+    {
+        return $this->setParameter('disableWebhookSignature', $value);
+    }
+
+    public function getDisableWebhookSignature()
+    {
+        return $this->getParameter('disableWebhookSignature');
     }
 }

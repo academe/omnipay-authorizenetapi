@@ -14,5 +14,9 @@ class ApiGatewayTests extends GatewayTestCase
             $this->getHttpClient(),
             $this->getHttpRequest()
         );
+
+        $this->gateway->setAuthName('authName');
+        $this->gateway->setTransactionKey('transactionKey');
+        $this->gateway->setRefId('refId');
     }
 }

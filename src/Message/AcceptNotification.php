@@ -16,16 +16,33 @@ use Omnipay\AuthorizeNetApi\Traits\HasGatewayParams;
 use Academe\AuthorizeNet\ServerRequest\Notification;
 use Academe\AuthorizeNet\Response\Model\TransactionResponse;
 
+use Omnipay\Common\Exception\InvalidRequestException;
+
 class AcceptNotification extends AbstractRequest implements NotificationInterface
 {
     use HasGatewayParams;
 
+    const SIGNATURE_HEADER_NAME = 'X-Anet-Signature';
+
+    /**
+     * The raw payload as a JSON string, used for signature validation.
+     */
+    protected $payload = '{}';
+
+    /**
+     * The payload data as a nested array.
+     */
     protected $data;
 
     /**
-     * The reponse data parsed into nested value objects.
+     * The response data parsed into nested value objects.
      */
     protected $parsedData;
+
+    /**
+     * The signature sent with the server request.
+     */
+    protected $signature;
 
     public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
     {
@@ -33,20 +50,25 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
         // and not (yet) a PSR-7 message.
 
         if ($httpRequest->getContentType() === 'json') {
-            $body = (string)$httpRequest->getContent();
-        } else {
-            $body = '{}';
+            $this->payload = (string)$httpRequest->getContent();
         }
 
-        $this->data = json_decode($body, true);
+        $this->data = json_decode($this->payload, true);
 
-        $this->parsedData = new Notification($this->data);
+        $this->setParsedData(new Notification($this->data));
+
+        // Save the signature for validating later.
+        // It cannot be validated until this object is initialised with parameters.
+
+        $this->signature = $httpRequest->headers->get(
+            static::SIGNATURE_HEADER_NAME
+        );
     }
 
     /**
      * Set the data parsed into a nested value object.
      */
-    public function setParsedData(Response $value)
+    public function setParsedData(Notification $value)
     {
         $this->parsedData = $value;
     }
@@ -61,7 +83,7 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
 
     /**
      * Get the raw data array for this message.
-     * The raw data will be passed in the body as JSON.
+     * The raw data is from the JSON payload.
      *
      * @return mixed
      */
@@ -73,10 +95,13 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
     /**
      * Gateway Reference
      *
-     * @return string A reference provided by the gateway to represent this transaction
+     * @throws InvalidRequestException
+     * @return string The gateway key for this transaction
      */
     public function getTransactionReference()
     {
+        $this->assertSignature();
+
         if ($this->getEventTarget() === $this->getParsedData()::EVENT_TARGET_PAYMENT) {
             return $this->getPayload()->getTransId();
         }
@@ -85,11 +110,14 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
     /**
      * Was the transaction successful?
      *
+     * @throws InvalidRequestException
      * @return string Transaction status, one of {@see STATUS_COMPLETED}, {@see #STATUS_PENDING},
      * or {@see #STATUS_FAILED}.
      */
     public function getTransactionStatus()
     {
+        $this->assertSignature();
+
         $responseCode = $this->getResponseCode();
 
         if ($responseCode === TransactionResponse::RESPONSE_CODE_APPROVED) {
@@ -104,11 +132,15 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
     /**
      * Response Message
      *
+     * @throws InvalidRequestException
      * @return string A response message from the payment gateway
      */
     public function getMessage()
     {
+        $this->assertSignature();
+
         // There are actually no messages in the notifications.
+
         return '';
     }
 
@@ -210,5 +242,54 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
         if ($this->getEventTarget() === $this->getParsedData()::EVENT_TARGET_PAYMENT) {
             return $this->getPayload()->getAuthAmount();
         }
+    }
+
+    /**
+     * Assert that the signature of the webhook is valid.
+     * Will honour the flag to disable this check.
+     *
+     * @throws InvalidRequestException
+     */
+    public function assertSignature()
+    {
+        if ($this->isSignatureValid() === false) {
+            throw new InvalidRequestException('Invalid or missing signature');
+        }
+    }
+
+    /**
+     * Check whether the signature is valid.
+     *
+     * @return bool|null true = valid; false = invalid; null = not checked.
+     */
+    public function isSignatureValid()
+    {
+        // Signature checking can be explicitly diabled.
+
+        if ($this->getDisableWebhookSignature()) {
+            return;
+        }
+
+        // A missing or malformed signature is invalid.
+
+        if ($this->signature === null || strpos($this->signature, 'sha512=') !== 0) {
+            return false;
+        }
+
+        // A missing signature key is also invalid.
+
+        if (($signatureKey = $this->getSignatureKey()) === null) {
+            return false;
+        }
+
+        // Check the signature.
+
+        list ($algorithm, $signatureString) = explode('=', $this->signature, 2);
+
+        $hashedPayload = strtoupper(
+            hash_hmac($algorithm, $this->payload, $signatureKey)
+        );
+
+        return $hashedPayload === $signatureString;
     }
 }

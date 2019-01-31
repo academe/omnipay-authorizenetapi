@@ -22,18 +22,20 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
         return array(
             // Required.
             // The name assigned for th application.
-            'authName' => '',
+            'authName' => null,
             // Required.
             // The access token assigned to this application.
-            'transactionKey' => '',
+            'transactionKey' => null,
             // Optional.
             // Either mobileDeviceId or refId can be provided.
-            'mobileDeviceId' => '',
-            'refId' => '',
+            'mobileDeviceId' => null,
+            'refId' => null,
             // True to run against the sandbox.
             'testMode' => false,
             // The shared key used to sign notifications.
-            'signatureKey' => '',
+            'signatureKey' => null,
+            // Set to disable the webhook signature assertions.
+            'disableWebhookSignature' => false,
         );
     }
 

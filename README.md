@@ -429,6 +429,7 @@ $gateway = Omnipay::create('AuthorizeNetApi_Api');
 
 $gateway->setAuthName($authName);
 $gateway->setTransactionKey($authKey);
+$gateway->setSignatureKey($signatureKey); // HMAC-256
 $gateway->setTestMode(true); // for false
 
 $notification = $gateway->acceptNotification();
@@ -474,6 +475,15 @@ browser traffic, and the ID (being in the URL) will not be included
 in the notification signing, so could be faked. It is unlikely, but just
 be aware that it is a potential attack vector, so maybe self-sign the URL
 too.
+
+Notifications can be signed by the gateway using a `signatureKey`.
+By default, this notificatino handler will verify the `signatureKey`
+and throw an exception if it failes to validate when fetching the
+result of the transaction.
+
+Validation of the `signatureKey` can be disabled if needed:
+
+    $gateway->setDisableWebhookSignature(true);
 
 For consistency with other Omipay Driers, this driver *may* make an
 opinionated decision on how the `transactionId` is passed into the
