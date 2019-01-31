@@ -246,13 +246,19 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
 
     /**
      * Assert that the signature of the webhook is valid.
-     * Will honour the flag to disable this check.
+     * Will honour the flag to skip this check.
      *
      * @throws InvalidRequestException
      */
     public function assertSignature()
     {
-        if ($this->isSignatureValid() === false) {
+        // Signature checking can be explicitly disabled.
+
+        if ((bool)$this->getDisableWebhookSignature()) {
+            return;
+        }
+
+        if (! $this->isSignatureValid()) {
             throw new InvalidRequestException('Invalid or missing signature');
         }
     }
@@ -260,16 +266,10 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
     /**
      * Check whether the signature is valid.
      *
-     * @return bool|null true = valid; false = invalid; null = not checked.
+     * @return bool true = valid; false = invalid.
      */
     public function isSignatureValid()
     {
-        // Signature checking can be explicitly diabled.
-
-        if ($this->getDisableWebhookSignature()) {
-            return;
-        }
-
         // A missing or malformed signature is invalid.
 
         if ($this->signature === null || strpos($this->signature, 'sha512=') !== 0) {
