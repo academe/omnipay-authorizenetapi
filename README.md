@@ -477,15 +477,22 @@ be aware that it is a potential attack vector, so maybe self-sign the URL
 too.
 
 Notifications can be signed by the gateway using a `signatureKey`.
-By default, this notificatino handler will verify the `signatureKey`
-and throw an exception if it failes to validate when fetching the
-result of the transaction.
+By default, this notification handler will verify the `signature`
+and throw an exception if it failes to validate against the key
+you provide when fetching the result of the transaction.
 
-Validation of the `signatureKey` can be disabled if needed:
+A manual check of the `signature` can be made using:
+
+    $notification->isSignatureValid()
+
+This will return `true` if the signature is valid,  or `false` if any
+part of the verification process fails.
+
+Validation of the `signature` can be disabled if needed:
 
     $gateway->setDisableWebhookSignature(true);
 
-For consistency with other Omipay Driers, this driver *may* make an
+For consistency with other Omipay Drivers, this driver *may* make an
 opinionated decision on how the `transactionId` is passed into the
 notification handler, but only after researchign how other people are
 handling it.

@@ -8,4 +8,8 @@ use Academe\AuthorizeNet\Request\Model\NameAddress;
 
 class AcceptNotificationTest extends TestCase
 {
+    public function testDummy()
+    {
+        $this->assertTrue(true);
+    }
 }
