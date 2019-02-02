@@ -102,9 +102,7 @@ class AcceptNotification extends AbstractRequest implements NotificationInterfac
     {
         $this->assertSignature();
 
-        $parsedData = $this->getParsedData();
-
-        if ($this->getEventTarget() === $parsedData::EVENT_TARGET_PAYMENT) {
+        if ($this->getEventTarget() === $this->getParsedData()::EVENT_TARGET_PAYMENT) {
             return $this->getPayload()->getTransId();
         }
     }
