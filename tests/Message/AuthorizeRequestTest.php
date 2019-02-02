@@ -1,10 +1,11 @@
 <?php
 
-namespace Omnipay\AuthorizeNetApi;
+namespace Omnipay\AuthorizeNetApi\Message;
 
 use Omnipay\Tests\TestCase;
 use Omnipay\Common\CreditCard;
 use Academe\AuthorizeNet\Request\Model\NameAddress;
+use Omnipay\AuthorizeNetApi\ApiGateway;
 
 class AuthorizeRequestTest extends TestCase
 {
