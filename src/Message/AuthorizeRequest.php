@@ -269,17 +269,18 @@ class AuthorizeRequest extends AbstractRequest
                     foreach ($sourceUserFields as $key => $value) {
                         if (is_string($key) && is_string($value)) {
                             // key/value pairs: 'key' => 'value'
+
                             $userFields->push(new UserField($key, $value));
                         }
 
-                        if (is_numeric($key) && is_array($value)) {
-                            // name/value pars: ['name' => 'the name', 'value' => 'the value']
+                        if (is_array($value) && count($value) === 2) {
+                            // name/value pairs: ['name' => 'the name', 'value' => 'the value']
 
                             $userFields->push(new UserField($value['name'], $value['value']));
                         }
 
                         if ($value instanceof UserField) {
-                            // An array of userField objects was supplied.
+                            // An array of UserField objects was supplied.
 
                             $userFields->push($value);
                         }
