@@ -21,6 +21,8 @@ use Academe\AuthorizeNet\Payment\OpaqueData;
 use Academe\AuthorizeNet\Request\Collections\LineItems;
 use Academe\AuthorizeNet\Request\Model\LineItem;
 use Academe\AuthorizeNet\Request\Model\CardholderAuthentication;
+use Academe\AuthorizeNet\Request\Collections\UserFields;
+use Academe\AuthorizeNet\Request\Model\UserField;
 
 use Money\Parser\DecimalMoneyParser;
 use Money\Currencies\ISOCurrencies;
@@ -252,6 +254,45 @@ class AuthorizeRequest extends AbstractRequest
             'terminalNumber' => $this->getTerminalNumber(),
         ]);
 
+        if ($sourceUserFields = $this->getUserFields()) {
+            // Can be provided as key/value array, array of name/value pairs
+            // or a readymade collection of models.
+
+            if ($sourceUserFields instanceof UserFields) {
+                // Already a collection; just use it.
+
+                $userFields = $sourceUserFields;
+            } else {
+                $userFields = new UserFields();
+
+                if (is_array($sourceUserFields)) {
+                    foreach ($sourceUserFields as $key => $value) {
+                        if (is_string($key) && is_string($value)) {
+                            // key/value pairs: 'key' => 'value'
+
+                            $userFields->push(new UserField($key, $value));
+                        }
+
+                        if (is_array($value) && count($value) === 2) {
+                            // name/value pairs: ['name' => 'the name', 'value' => 'the value']
+
+                            $userFields->push(new UserField($value['name'], $value['value']));
+                        }
+
+                        if ($value instanceof UserField) {
+                            // An array of UserField objects was supplied.
+
+                            $userFields->push($value);
+                        }
+                    }
+                }
+            }
+
+            if ($userFields->count()) {
+                $transaction = $transaction->withUserFields($userFields);
+            }
+        }
+
         return $transaction;
     }
 
@@ -384,5 +425,15 @@ class AuthorizeRequest extends AbstractRequest
                 . static::CARD_TOKEN_SEPARATOR
                 . $opaqueDataValue;
         }
+    }
+
+    public function setUserFields($value)
+    {
+        return $this->setParameter('userFields', $value);
+    }
+
+    public function getUserFields()
+    {
+        return $this->getParameter('userFields');
     }
 }
