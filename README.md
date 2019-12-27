@@ -34,14 +34,14 @@ Omnipay 3.x implementation of Authorize.Net API
 
 The *Authorize.Net API* driver handles server-to-server requests.
 It is used both for direct card payment (though check PCI requirements)
-and for creating transactions using a card token.
+and for creating transactions using a card token generated client-side.
 
 ## API Authorize/Purchase (Credit Card)
 
 The following example is a simple authorize with supplied card details.
-You would normally avoid allowing card details near your merchant site
+*You would normally avoid allowing card details near your merchant site
 back end for PCI compliance reasons,
-supplying a tokenised card reference instead (see later section for this).
+supplying a tokenised card reference instead (see later section for this).*
 
 ```php
 <?php
@@ -115,17 +115,18 @@ $response = $gateway->capture([
 ## API Authorize/Purchase (Opaque Data)
 
 The "Opaque Data" here is a tokenised credit or debit card.
-Authorize.Net can tokenise cards in a number of ways, once of which
-is through the `accept.js` package on the front end. It works like this:
+Authorize.Net can tokenise cards in a number of ways, one of which
+is through the `accept.js` package on the front end.
+It works like this:
 
 You build a payment form in your page.
 As well as hard-coding it as shown below, the gateway provides a method
-to generate it dynamically too.
+you can use to generate it dynamically.
 
 ```html
 <form id="paymentForm"
     method="POST"
-    action="https://example.com/authorize">
+    action="https://your-site.example.com/authorize">
     <input type="text" id="cardNumber" placeholder="cardNumber"/>
     <input type="text" id="expMonth" placeholder="expMonth"/>
     <input type="text" id="expYear" placeholder="expYear"/>
@@ -137,10 +138,10 @@ to generate it dynamically too.
 ```
 
 Note the card detail elements do not have names, so will not be submitted
-to your site.
-Two hidden fields are defined to carry the opaquer data to your site.
-You can include any many other fields as you like in the same form,
-which may include names and an address.
+to your site. This is important for PCI reasons.
+Two hidden fields are defined to carry the opaque data to your site.
+You can include as many other fields as you like in the same form,
+which may include a name and an address.
 
 After the payment form, you will need the `accept.js` JavaScript:
 
@@ -151,7 +152,7 @@ After the payment form, you will need the `accept.js` JavaScript:
     </script>
 ```
 
-Or use `https://js.authorize.net/v1/Accept.js` for production.
+Use the `https://js.authorize.net/v1/Accept.js` URL for production.
 
 You need to catch the "Pay Now" submission and send it to a function to
 process the card details. Either an `onclick` attribute or a jQuery event
@@ -212,7 +213,7 @@ function responseHandler(response) {
 }
 ```
 
-Populate the opaque data hidden form items, then submit the form again:
+Populate the opaque data hidden form items, then finally submit the form:
 
 ```javascript
 function paymentFormUpdate(opaqueData) {
