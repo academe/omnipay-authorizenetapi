@@ -257,7 +257,7 @@ details were provided directly. In the result, the last four digits
 of the card will be made available in case a refund needs to be performed.
 
 Further details can be 
-[fouund in the officual documentation](https://developer.authorize.net/api/reference/features/acceptjs.html).
+[found in the official documentation](https://developer.authorize.net/api/reference/features/acceptjs.html).
 
 Note also that the opaque data is used for other payment sources, such as
 bank accounts and PayPal.
